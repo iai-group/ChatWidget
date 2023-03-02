@@ -7,8 +7,18 @@ This is a simple chat widget that can be embedded into any website. It is built 
 To use this widget, you need to have a server running. You can find instructions on how to set up the server [here](../README.md).
 Add the following code to your website:
 
+<!-- TODO change the path to the compiled files -->
+
 ```html
-<script src="/iai-group/MovieBot/chat-widget/build/asset-manifest.json"></script>
+<link rel="manifest" href="/iai-group/chatwidget/build/asset-manifest.json" />
+<link
+  rel="stylesheet"
+  href="/iai-group/chatwidget/static/build/static/css/main.css"
+/>
+<script
+  type="text/javascript"
+  src="/iai-group/chatwidget/build/static/js/main.js"
+></script>
 ```
 
 The widget can be initialized in one of two ways:
