@@ -11,10 +11,7 @@ Add the following code to your website:
 
 ```html
 <link rel="manifest" href="/iai-group/chatwidget/build/asset-manifest.json" />
-<link
-  rel="stylesheet"
-  href="/iai-group/chatwidget/static/build/static/css/main.css"
-/>
+<link rel="stylesheet" href="/iai-group/chatwidget/build/static/css/main.css" />
 <script
   type="text/javascript"
   src="/iai-group/chatwidget/build/static/js/main.js"
