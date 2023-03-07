@@ -14,10 +14,12 @@ import { AgentChatMessage, UserChatMessage } from "./ChatMessage";
 import { ChatMessage } from "../types";
 
 export default function ChatBox({
+  name,
   onClose,
   connector,
   use_feedback,
 }: {
+  name: string;
   onClose: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   connector: {
     sendMessage: (message: { message: string }) => void;
@@ -71,13 +73,13 @@ export default function ChatBox({
   const handelMessage = useCallback(
     (message: ChatMessage) => {
       if (!!message.text) {
-        const movie_url = message.attachment?.payload.url;
+        const image_url = message.attachment?.payload.url;
         updateMessages(
           <AgentChatMessage
             key={chatMessagesRef.current.length}
             feedback={use_feedback ? connector.giveFeedback : null}
             message={message.text}
-            movie_url={movie_url}
+            image_url={image_url}
           />
         );
       }
@@ -135,7 +137,7 @@ export default function ChatBox({
           borderTopRightRadius: "15px",
         }}
       >
-        <p className="mb-0 fw-bold">MovieBot</p>
+        <p className="mb-0 fw-bold">{name}</p>
         <a href="#!" onClick={onClose} style={{ color: "white" }}>
           <MDBIcon fas icon="angle-down" />
         </a>
@@ -159,11 +161,6 @@ export default function ChatBox({
             placeholder="Type message"
             ref={inputRef}
           ></input>
-          {/* <MTDTextArea 
-                  className="form-control form-control-lg" 
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type message"
-                ></MTDTextArea> */}
           <button type="submit" className="btn btn-link text-muted">
             <MDBIcon fas size="2x" icon="paper-plane" />
           </button>

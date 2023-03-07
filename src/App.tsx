@@ -20,13 +20,11 @@ export default function App(props: Config) {
           <MDBIcon fas icon="robot" />
         </a>
       </div>
-      {/* <MDBContainer className="py-5">
-        <MDBRow className="d-flex justify-content-center">
-          <MDBCol md="8" lg="6" xl="4"> */}
       <div className="chat-widget-box">
         <div className="chat-widget-content">
           {isChatBoxOpen && (
             <ChatBox
+              name={props.name || "Chatbot"}
               onClose={handleClick}
               connector={connector}
               use_feedback={props.useFeedback || false}
@@ -34,9 +32,6 @@ export default function App(props: Config) {
           )}
         </div>
       </div>
-      {/* </MDBCol>
-        </MDBRow>
-      </MDBContainer> */}
     </div>
   );
 }

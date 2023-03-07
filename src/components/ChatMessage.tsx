@@ -21,11 +21,11 @@ function UserChatMessage({ message }: { message: string }): JSX.Element {
 
 function AgentChatMessage({
   message,
-  movie_url,
+  image_url,
   feedback,
 }: {
   message: string;
-  movie_url?: string;
+  image_url?: string;
   feedback: ((message: string, event: string) => void) | null;
 }): JSX.Element {
   return (
@@ -41,11 +41,11 @@ function AgentChatMessage({
           backgroundColor: "rgba(57, 192, 237,.2)",
         }}
       >
-        {!!movie_url && (
+        {!!image_url && (
           <div className="d-flex flex-row justify-content-center">
             <img
-              src={movie_url}
-              alt="Movie Poster"
+              src={image_url}
+              alt=""
               style={{ width: "200px", height: "100%" }}
             />
           </div>

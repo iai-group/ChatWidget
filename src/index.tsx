@@ -22,6 +22,8 @@ const initChatWidget = (
   }
 
   config = {
+    name:
+      config?.name || widgetContainer?.getAttribute("data-name") || "Chatbot",
     serverUrl:
       config?.serverUrl ||
       widgetContainer?.getAttribute("data-server-url") ||

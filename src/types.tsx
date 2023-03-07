@@ -1,4 +1,5 @@
 export type Config = {
+  name: string | undefined;
   serverUrl: string | undefined;
   useFeedback: boolean | undefined;
   useLogin: boolean | undefined;
