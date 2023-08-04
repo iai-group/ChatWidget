@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
-import { AgentMessage, UserMessage, ChatMessage } from "../types";
+import { AgentMessage, UserMessage, ChatMessage } from "./types";
 
 export default function useSocketConnection(
   url: string = "http://127.0.0.1:5000",
@@ -8,15 +8,28 @@ export default function useSocketConnection(
 ) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [connectError, setConnectError] = useState<Error | null>(null);
   const onMessageRef = useRef<(message: ChatMessage) => void>();
   const onRestartRef = useRef<() => void>();
+  const onLoginRef = useRef<(success: boolean, message: string) => void>();
 
   useEffect(() => {
     const newSocket = io(url, { path: path });
     setSocket(newSocket);
 
+    newSocket.on("connect_error", (error) => {
+      console.error("Connection error", error);
+      setConnectError(error); // Set connection error
+    });
+
+    newSocket.on("connect_timeout", () => {
+      console.error("Connection timeout");
+      setConnectError(new Error("Connection timeout")); // Set timeout as connection error
+    });
+
     newSocket.on("connect", () => {
       setIsConnected(true);
+      setConnectError(null);
     });
 
     newSocket.on("disconnect", () => {
@@ -36,6 +49,10 @@ export default function useSocketConnection(
       onRestartRef.current && onRestartRef.current();
     });
 
+    newSocket.on("loginResponse", ({ success, message }) => {
+      onLoginRef.current && onLoginRef.current(success, message);
+    });
+
     return () => {
       newSocket.disconnect();
     };
@@ -53,12 +70,20 @@ export default function useSocketConnection(
     socket?.emit("feedback", { message: message, event: event });
   };
 
+  const login = (username: string, password: string) => {
+    socket?.emit("login", { username, password });
+  };
+
   const onMessage = (callback: (response: ChatMessage) => void) => {
     onMessageRef.current = callback;
   };
 
   const onRestart = (callback: () => void) => {
     onRestartRef.current = callback;
+  };
+
+  const onLogin = (callback: (success: boolean, message: string) => void) => {
+    onLoginRef.current = callback;
   };
 
   return {
@@ -68,5 +93,7 @@ export default function useSocketConnection(
     quickReply,
     onRestart,
     onMessage,
+    login,
+    onLogin,
   };
 }

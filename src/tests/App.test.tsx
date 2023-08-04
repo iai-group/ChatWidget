@@ -1,26 +1,23 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { render } from "@testing-library/react";
 import App from "../App";
-import { Config } from "../types";
+import { ConfigContext } from "../contexts/ConfigContext";
 
-test("Renders widget", () => {
-  const config: Config = {
-    name: "Chatbot",
-    serverUrl: "http://localhost:5000",
-    useFeedback: false,
-    useLogin: false,
-    useWidget: true,
-  };
-  render(<App {...config} />);
+test("Renders Embedded", () => {
+  render(<App />);
 });
 
-test("Renders embedded", () => {
-  const config: Config = {
-    name: "Chatbot",
-    serverUrl: "http://localhost:5000",
-    useFeedback: false,
-    useLogin: false,
-    useWidget: false,
-  };
-  render(<App {...config} />);
+test("Renders Widget", () => {
+  const { setConfig } = useContext(ConfigContext);
+
+  // Set the config when the component mounts
+  useEffect(() => {
+    const config = {
+      useWidget: true,
+    };
+
+    setConfig((prevConfig) => ({ ...prevConfig, ...config }));
+  }, [setConfig]);
+
+  render(<App />);
 });
