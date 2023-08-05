@@ -5,11 +5,14 @@ import {
   MDBCard,
   MDBCardBody,
   MDBCardTitle,
-  MDBCardText,
+  MDBCardHeader,
 } from "mdb-react-ui-kit";
-import { UserContext } from "../contexts/UserContext";
+import "./LoginForm.css";
+import { UserContext } from "../../contexts/UserContext";
+import { ConfigContext } from "../../contexts/ConfigContext";
 
 const LoginForm = ({ socketConnector }: { socketConnector: any }) => {
+  const { config } = useContext(ConfigContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(UserContext);
@@ -36,10 +39,24 @@ const LoginForm = ({ socketConnector }: { socketConnector: any }) => {
   }, [socketConnector, setUser, username]);
 
   return (
-    <MDBCard>
-      <MDBCardBody>
-        <MDBCardTitle>Login</MDBCardTitle>
-        <MDBCardText>
+    <div className="chat-widget-content">
+      <MDBCard
+        id="chatBox"
+        className="chat-widget-card"
+        style={{ borderRadius: "15px" }}
+      >
+        <MDBCardHeader
+          className="d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0"
+          style={{
+            borderTopLeftRadius: "15px",
+            borderTopRightRadius: "15px",
+          }}
+        >
+          <p className="mb-0 fw-bold">{config.name}</p>
+        </MDBCardHeader>
+
+        <MDBCardBody>
+          <MDBCardTitle>Login</MDBCardTitle>
           <form onSubmit={handleLogin}>
             <MDBInput
               label="Username"
@@ -53,9 +70,9 @@ const LoginForm = ({ socketConnector }: { socketConnector: any }) => {
             <MDBBtn type="submit">Sign In</MDBBtn>
             <MDBBtn onClick={handleAnonymousLogin}>Anonymous</MDBBtn>
           </form>
-        </MDBCardText>
-      </MDBCardBody>
-    </MDBCard>
+        </MDBCardBody>
+      </MDBCard>
+    </div>
   );
 };
 

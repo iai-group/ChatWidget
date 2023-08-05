@@ -2,16 +2,19 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import {
   Config,
   ConfigContext,
   ConfigProvider,
 } from "./contexts/ConfigContext";
-import { useEffect } from "react";
+import { UserProvider } from "./contexts/UserContext";
+import App from "./App";
+
+import reportWebVitals from "./reportWebVitals";
+
+let root: ReactDOM.Root;
 
 const ConfigLoader: React.FC<{ config: Partial<Config> }> = ({ config }) => {
   const { setConfig } = useContext(ConfigContext);
@@ -45,11 +48,15 @@ window.ChatWidget = (config, containerId) => {
     if (dataset.socketioPath) config.socketioPath = dataset.socketioPath;
   }
 
-  const root = ReactDOM.createRoot(container as HTMLElement);
+  if (!root) {
+    root = ReactDOM.createRoot(container as HTMLElement);
+  }
 
   root.render(
     <ConfigProvider>
-      <ConfigLoader config={config} />
+      <UserProvider>
+        <ConfigLoader config={config} />
+      </UserProvider>
     </ConfigProvider>
   );
 };

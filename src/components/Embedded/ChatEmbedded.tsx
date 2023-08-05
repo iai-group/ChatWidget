@@ -1,6 +1,6 @@
 import "./ChatEmbedded.css";
-import ChatBox from "../ChatBox/ChatBox";
+import { ReactNode } from "react";
 
-export default function ChatEmbedded({ socketConnector }: any) {
-  return <ChatBox socketConnector={socketConnector} />;
+export default function ChatEmbedded({ children }: { children: ReactNode }) {
+  return <>{children}</>;
 }

@@ -1,9 +1,8 @@
 import "./ChatWidget.css";
-import { useState, MouseEvent } from "react";
-import ChatBox from "../ChatBox/ChatBox";
+import { useState, MouseEvent, ReactNode } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
 
-export default function ChatWidget({ socketConnector }: any) {
+export default function ChatWidget({ children }: { children: ReactNode }) {
   const [isChatBoxOpen, setIsChatBoxOpen] = useState<boolean>(false);
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
@@ -17,9 +16,7 @@ export default function ChatWidget({ socketConnector }: any) {
           <MDBIcon fas icon="robot" />
         </a>
       </div>
-      <div className="chat-widget-box">
-        {isChatBoxOpen && <ChatBox socketConnector={socketConnector} />}
-      </div>
+      <div className="chat-widget-box">{isChatBoxOpen && children}</div>
     </div>
   );
 }

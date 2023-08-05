@@ -14,9 +14,3 @@
   height: 1px;
   background: #eee;
 }
-
-.chat-widget-content .card-body{
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column-reverse;
- }
