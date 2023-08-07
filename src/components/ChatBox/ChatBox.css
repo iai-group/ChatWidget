@@ -15,7 +15,7 @@
   background: #eee;
 }
 
-#chatBox .chat-widget-content .card-body{
+#chatBox .card-body{
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
