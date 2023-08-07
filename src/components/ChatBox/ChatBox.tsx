@@ -8,7 +8,8 @@ import React, {
   useContext,
 } from "react";
 import QuickReplyButton from "../QuickReply";
-
+import { useSocket } from "../../contexts/SocketContext";
+import { UserContext } from "../../contexts/UserContext";
 import {
   MDBCard,
   MDBCardHeader,
@@ -20,13 +21,26 @@ import { AgentChatMessage, UserChatMessage } from "../ChatMessage";
 import { ChatMessage } from "../../types";
 import { ConfigContext } from "../../contexts/ConfigContext";
 
-export default function ChatBox({ socketConnector }: { socketConnector: any }) {
+export default function ChatBox() {
   const { config } = useContext(ConfigContext);
+  const { user } = useContext(UserContext);
+  const {
+    startConversation,
+    sendMessage,
+    quickReply,
+    onMessage,
+    onRestart,
+    giveFeedback,
+  } = useSocket();
   const [chatMessages, setChatMessages] = useState<JSX.Element[]>([]);
   const [chatButtons, setChatButtons] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const chatMessagesRef = useRef(chatMessages);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    startConversation();
+  }, [startConversation]);
 
   const updateMessages = (message: JSX.Element) => {
     chatMessagesRef.current = [...chatMessagesRef.current, message];
@@ -42,7 +56,7 @@ export default function ChatBox({ socketConnector }: { socketConnector: any }) {
         message={inputValue}
       />
     );
-    socketConnector.sendMessage({ message: inputValue });
+    sendMessage({ message: inputValue });
     setInputValue("");
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -57,9 +71,9 @@ export default function ChatBox({ socketConnector }: { socketConnector: any }) {
           message={message}
         />
       );
-      socketConnector.quickReply({ message: message });
+      quickReply({ message: message });
     },
-    [socketConnector, chatMessagesRef]
+    [chatMessagesRef, quickReply]
   );
 
   const handelMessage = useCallback(
@@ -71,14 +85,14 @@ export default function ChatBox({ socketConnector }: { socketConnector: any }) {
         updateMessages(
           <AgentChatMessage
             key={chatMessagesRef.current.length}
-            feedback={config.useFeedback ? socketConnector.giveFeedback : null}
+            feedback={config.useFeedback ? giveFeedback : null}
             message={message.text}
             image_url={image_url}
           />
         );
       }
     },
-    [socketConnector, chatMessagesRef, config]
+    [giveFeedback, chatMessagesRef, config]
   );
 
   const handleButtons = useCallback(
@@ -107,18 +121,18 @@ export default function ChatBox({ socketConnector }: { socketConnector: any }) {
   );
 
   useEffect(() => {
-    socketConnector.onMessage((message: ChatMessage) => {
+    onMessage((message: ChatMessage) => {
       handelMessage(message);
       handleButtons(message);
     });
-  }, [socketConnector, handleButtons, handelMessage]);
+  }, [onMessage, handleButtons, handelMessage]);
 
   useEffect(() => {
-    socketConnector.onRestart(() => {
+    onRestart(() => {
       setChatMessages([]);
       setChatButtons([]);
     });
-  }, [socketConnector]);
+  }, [onRestart]);
 
   return (
     <div className="chat-widget-content">
@@ -135,6 +149,7 @@ export default function ChatBox({ socketConnector }: { socketConnector: any }) {
           }}
         >
           <p className="mb-0 fw-bold">{config.name}</p>
+          <p className="mb-0 fw-bold">{user?.username}</p>
         </MDBCardHeader>
 
         <MDBCardBody>

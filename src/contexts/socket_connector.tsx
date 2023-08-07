@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
-import { AgentMessage, UserMessage, ChatMessage } from "./types";
+import { AgentMessage, UserMessage, ChatMessage } from "../types";
 
 export default function useSocketConnection(
   url: string = "http://127.0.0.1:5000",
@@ -11,7 +11,8 @@ export default function useSocketConnection(
   const [connectError, setConnectError] = useState<Error | null>(null);
   const onMessageRef = useRef<(message: ChatMessage) => void>();
   const onRestartRef = useRef<() => void>();
-  const onLoginRef = useRef<(success: boolean, message: string) => void>();
+  const onLoginRef = useRef<(success: boolean, error: string) => void>();
+  const onRegisterRef = useRef<(success: boolean, error: string) => void>();
 
   useEffect(() => {
     const newSocket = io(url, { path: path });
@@ -49,14 +50,22 @@ export default function useSocketConnection(
       onRestartRef.current && onRestartRef.current();
     });
 
-    newSocket.on("loginResponse", ({ success, message }) => {
-      onLoginRef.current && onLoginRef.current(success, message);
+    newSocket.on("login_response", ({ success, error }) => {
+      onLoginRef.current && onLoginRef.current(success, error);
+    });
+
+    newSocket.on("register_response", ({ success, error }) => {
+      onRegisterRef.current && onRegisterRef.current(success, error);
     });
 
     return () => {
       newSocket.disconnect();
     };
   }, [url, path]);
+
+  const startConversation = () => {
+    socket?.emit("start_conversation", {});
+  };
 
   const sendMessage = (message: UserMessage) => {
     socket?.emit("message", message);
@@ -70,10 +79,6 @@ export default function useSocketConnection(
     socket?.emit("feedback", { message: message, event: event });
   };
 
-  const login = (username: string, password: string) => {
-    socket?.emit("login", { username, password });
-  };
-
   const onMessage = (callback: (response: ChatMessage) => void) => {
     onMessageRef.current = callback;
   };
@@ -82,12 +87,25 @@ export default function useSocketConnection(
     onRestartRef.current = callback;
   };
 
-  const onLogin = (callback: (success: boolean, message: string) => void) => {
+  const login = (username: string, password: string) => {
+    socket?.emit("login", { username, password });
+  };
+
+  const onLogin = (callback: (success: boolean, error: string) => void) => {
     onLoginRef.current = callback;
+  };
+
+  const register = (username: string, password: string) => {
+    socket?.emit("register", { username, password });
+  };
+
+  const onRegister = (callback: (success: boolean, error: string) => void) => {
+    onRegisterRef.current = callback;
   };
 
   return {
     isConnected,
+    startConversation,
     sendMessage,
     giveFeedback,
     quickReply,
@@ -95,5 +113,7 @@ export default function useSocketConnection(
     onMessage,
     login,
     onLogin,
+    register,
+    onRegister,
   };
 }

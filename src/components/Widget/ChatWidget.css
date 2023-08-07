@@ -19,7 +19,7 @@ min-height: 170px;
 transition: all 0.3s ease-in-out;
 }
 
-.chat-widget-content .card-body{
+.chat-widget-container .chat-widget-content .card-body{
  max-height: 450px;
 }
 

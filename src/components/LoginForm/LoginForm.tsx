@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useSocket } from "../../contexts/SocketContext";
 import {
   MDBInput,
   MDBBtn,
@@ -6,42 +7,53 @@ import {
   MDBCardBody,
   MDBCardTitle,
   MDBCardHeader,
+  MDBCardText,
 } from "mdb-react-ui-kit";
 import "./LoginForm.css";
 import { UserContext } from "../../contexts/UserContext";
 import { ConfigContext } from "../../contexts/ConfigContext";
 
-const LoginForm = ({ socketConnector }: { socketConnector: any }) => {
+const LoginForm = () => {
   const { config } = useContext(ConfigContext);
+  const { setUser } = useContext(UserContext);
+  const { login, onLogin, register, onRegister } = useSocket();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useContext(UserContext);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    socketConnector.login(username, password);
-  };
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleAnonymousLogin = () => {
     setUser({ username: "Anonymous", isAnonymous: true });
   };
 
-  // This is where we handle the server's response to the login attempt.
-  // We're assuming the server will respond with an "loginResponse" event.
+  const handleLogin = () => {
+    login(username, password);
+  };
+
+  const handleRegister = () => {
+    register(username, password);
+  };
+
   useEffect(() => {
-    socketConnector.onLogin((success: boolean, message: string) => {
+    onLogin((success: boolean, error: string) => {
       if (success) {
         setUser({ username, isAnonymous: false });
       } else {
-        alert(message); // Show the error message from the server.
+        setErrorMessage(error);
       }
     });
-  }, [socketConnector, setUser, username]);
+    onRegister((success: boolean, error: string) => {
+      if (success) {
+        setUser({ username, isAnonymous: false });
+      } else {
+        setErrorMessage(error);
+      }
+    });
+  }, [onLogin, onRegister, setUser, setErrorMessage, username]);
 
   return (
     <div className="chat-widget-content">
       <MDBCard
-        id="chatBox"
+        id="loginForm"
         className="chat-widget-card"
         style={{ borderRadius: "15px" }}
       >
@@ -55,21 +67,25 @@ const LoginForm = ({ socketConnector }: { socketConnector: any }) => {
           <p className="mb-0 fw-bold">{config.name}</p>
         </MDBCardHeader>
 
-        <MDBCardBody>
+        <MDBCardBody className="login">
           <MDBCardTitle>Login</MDBCardTitle>
-          <form onSubmit={handleLogin}>
-            <MDBInput
-              label="Username"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <MDBInput
-              type="password"
-              label="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <MDBBtn type="submit">Sign In</MDBBtn>
+          <MDBInput
+            label="Username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <MDBInput
+            type="password"
+            label="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {errorMessage && (
+            <MDBCardText className="text-danger">{errorMessage}</MDBCardText>
+          )}
+          <div className="d-flex justify-content-between mt-3">
+            <MDBBtn onClick={handleRegister}>Register</MDBBtn>
+            <MDBBtn onClick={handleLogin}>Sign In</MDBBtn>
             <MDBBtn onClick={handleAnonymousLogin}>Anonymous</MDBBtn>
-          </form>
+          </div>
         </MDBCardBody>
       </MDBCard>
     </div>

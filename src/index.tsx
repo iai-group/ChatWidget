@@ -13,6 +13,7 @@ import { UserProvider } from "./contexts/UserContext";
 import App from "./App";
 
 import reportWebVitals from "./reportWebVitals";
+import { SocketProvider } from "./contexts/SocketContext";
 
 let root: ReactDOM.Root;
 
@@ -54,9 +55,11 @@ window.ChatWidget = (config, containerId) => {
 
   root.render(
     <ConfigProvider>
-      <UserProvider>
-        <ConfigLoader config={config} />
-      </UserProvider>
+      <SocketProvider>
+        <UserProvider>
+          <ConfigLoader config={config} />
+        </UserProvider>
+      </SocketProvider>
     </ConfigProvider>
   );
 };
