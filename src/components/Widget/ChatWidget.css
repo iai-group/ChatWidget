@@ -19,11 +19,8 @@ min-height: 170px;
 transition: all 0.3s ease-in-out;
 }
 
-.chat-widget-content .card-body{
- overflow-y: auto;
+.chat-widget-container .chat-widget-content .card-body{
  max-height: 450px;
- display: flex;
- flex-direction: column-reverse;
 }
 
 .chat-widget-icon{

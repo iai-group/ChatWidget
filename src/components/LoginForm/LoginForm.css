@@ -1,8 +1,12 @@
-.chat .form-control {
+.login {
+  max-width: 400px;
+}
+
+.login .form-control {
     border-color: transparent;
   }
   
-.chat .form-control:focus {
+.login .form-control:focus {
   border-color: transparent;
   box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -14,9 +18,3 @@
   height: 1px;
   background: #eee;
 }
-
-.chat.card-body{
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column-reverse;
- }

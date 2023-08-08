@@ -1,66 +1,73 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
+
+import React, { useContext, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import {
+  Config,
+  ConfigContext,
+  ConfigProvider,
+} from "./contexts/ConfigContext";
+import { UserProvider } from "./contexts/UserContext";
 import App from "./App";
+
 import reportWebVitals from "./reportWebVitals";
-import { Config } from "./types";
+import { SocketProvider } from "./contexts/SocketContext";
 
 let root: ReactDOM.Root;
 
-const initChatWidget = (
-  config: Config | undefined = undefined,
-  widgetContainerID: string | undefined = "chatWidgetContainer"
-) => {
-  let widgetContainer: HTMLElement | null =
-    document.getElementById(widgetContainerID);
-  if (!widgetContainer) {
-    widgetContainer = document.createElement("div");
-    widgetContainer.id = "chatWidgetContainer";
-    document.body.appendChild(widgetContainer);
-  }
+const ConfigLoader: React.FC<{ config: Partial<Config> }> = ({ config }) => {
+  const { setConfig } = useContext(ConfigContext);
 
-  config = {
-    name:
-      config?.name || widgetContainer?.getAttribute("data-name") || "Chatbot",
-    serverUrl:
-      config?.serverUrl ||
-      widgetContainer?.getAttribute("data-server-url") ||
-      "http://127.0.0.1:5000/",
-    socketioPath:
-      config?.socketioPath ||
-      widgetContainer?.getAttribute("data-socketio-path") ||
-      undefined,
-    useFeedback:
-      config?.useFeedback ?? widgetContainer?.hasAttribute("data-use-feedback"),
-    useLogin:
-      config?.useLogin ?? widgetContainer?.hasAttribute("data-use-login"),
-    useWidget:
-      config?.useWidget ?? widgetContainer?.hasAttribute("data-use-widget"),
-  };
+  useEffect(() => {
+    setConfig((prevConfig) => ({ ...prevConfig, ...config }));
+  }, [config, setConfig]);
 
-  if (!root) {
-    root = ReactDOM.createRoot(widgetContainer as HTMLElement);
-  }
-
-  root.render(
-    <React.StrictMode>
-      <App {...config} />
-    </React.StrictMode>
-  );
+  return <App />;
 };
 
 declare global {
   interface Window {
-    ChatWidget: typeof initChatWidget;
+    ChatWidget: (config: Partial<Config>, containerId: string) => void;
   }
 }
 
+window.ChatWidget = (config, containerId) => {
+  const container = document.getElementById(containerId);
+
+  if (Object.keys(config).length === 0 && container) {
+    // Read data properties from the container div and use them as the config
+    const dataset = container.dataset;
+    config = {
+      useFeedback: "useFeedback" in dataset,
+      useLogin: "useLogin" in dataset,
+      showExplanation: "showExplanation" in dataset,
+      useWidget: "useWidget" in dataset,
+    };
+    if (dataset.name) config.name = dataset.name;
+    if (dataset.serverUrl) config.serverUrl = dataset.serverUrl;
+    if (dataset.socketioPath) config.socketioPath = dataset.socketioPath;
+  }
+
+  if (!root) {
+    root = ReactDOM.createRoot(container as HTMLElement);
+  }
+
+  root.render(
+    <ConfigProvider>
+      <SocketProvider>
+        <UserProvider>
+          <ConfigLoader config={config} />
+        </UserProvider>
+      </SocketProvider>
+    </ConfigProvider>
+  );
+};
+
 if (document.getElementById("chatWidgetContainer")) {
-  initChatWidget();
+  window.ChatWidget({}, "chatWidgetContainer");
 }
-window.ChatWidget = initChatWidget;
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

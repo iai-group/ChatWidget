@@ -23,9 +23,9 @@ The widget can be initialized in one of two ways:
   * Add the following div to your website:
   `<div id="chatWidgetContainer"></div>`
   * Add the following script to your website:
-  `<script>initChatWidget()</script>`
+  `<script>ChatWidget()</script>`
 
-There is configuration associated with the widget. You can pass it to the `initChatWidget` function as an object or to the `div` element as attributes.
+There is configuration associated with the widget. You can pass it to the `ChatWidget` function as an object or to the `div` element as attributes.
 
 | Attribute           | Description             | Default value                 |
 | ------------------- | ----------------------- | -----------------------       |
@@ -55,7 +55,7 @@ Example usage:
     serverUrl: "http://127.0.0.1:5000",
     useFeedback: true,
     useLogin: true,
-  });
+  }, "customContainerId");
 </script>
 ```
 
