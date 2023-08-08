@@ -42,6 +42,7 @@ window.ChatWidget = (config, containerId) => {
     config = {
       useFeedback: "useFeedback" in dataset,
       useLogin: "useLogin" in dataset,
+      showExplanation: "showExplanation" in dataset,
       useWidget: "useWidget" in dataset,
     };
     if (dataset.name) config.name = dataset.name;

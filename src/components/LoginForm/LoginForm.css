@@ -1,8 +1,12 @@
-#loginForm .form-control {
+.login {
+  max-width: 400px;
+}
+
+.login .form-control {
     border-color: transparent;
   }
   
-#loginForm .form-control:focus {
+.login .form-control:focus {
   border-color: transparent;
   box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -13,8 +17,4 @@
   flex: 1;
   height: 1px;
   background: #eee;
-}
-
-.login {
-  max-width: 400px;
 }

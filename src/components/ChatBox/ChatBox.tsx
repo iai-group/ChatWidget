@@ -9,21 +9,14 @@ import React, {
 } from "react";
 import QuickReplyButton from "../QuickReply";
 import { useSocket } from "../../contexts/SocketContext";
-import { UserContext } from "../../contexts/UserContext";
-import {
-  MDBCard,
-  MDBCardHeader,
-  MDBCardBody,
-  MDBIcon,
-  MDBCardFooter,
-} from "mdb-react-ui-kit";
+import { MDBCardBody, MDBIcon, MDBCardFooter } from "mdb-react-ui-kit";
 import { AgentChatMessage, UserChatMessage } from "../ChatMessage";
 import { ChatMessage } from "../../types";
 import { ConfigContext } from "../../contexts/ConfigContext";
+import Frame from "../Frame/Frame";
 
 export default function ChatBox() {
   const { config } = useContext(ConfigContext);
-  const { user } = useContext(UserContext);
   const {
     startConversation,
     sendMessage,
@@ -135,24 +128,9 @@ export default function ChatBox() {
   }, [onRestart]);
 
   return (
-    <div className="chat-widget-content">
-      <MDBCard
-        id="chatBox"
-        className="chat-widget-card"
-        style={{ borderRadius: "15px" }}
-      >
-        <MDBCardHeader
-          className="d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0"
-          style={{
-            borderTopLeftRadius: "15px",
-            borderTopRightRadius: "15px",
-          }}
-        >
-          <p className="mb-0 fw-bold">{config.name}</p>
-          <p className="mb-0 fw-bold">{user?.username}</p>
-        </MDBCardHeader>
-
-        <MDBCardBody>
+    <Frame>
+      <>
+        <MDBCardBody className="chat">
           <div className="card-body-messages">
             {chatMessages}
             <div className="d-flex flex-wrap justify-content-between">
@@ -175,7 +153,7 @@ export default function ChatBox() {
             </button>
           </form>
         </MDBCardFooter>
-      </MDBCard>
-    </div>
+      </>
+    </Frame>
   );
 }

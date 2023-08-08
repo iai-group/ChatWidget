@@ -3,10 +3,11 @@ import React, { useState, ReactNode } from "react";
 export type Config = {
   name: string | undefined;
   serverUrl: string | undefined;
-  useFeedback: boolean | undefined;
-  useLogin: boolean | undefined;
-  useWidget?: boolean | undefined;
   socketioPath?: string | undefined;
+  useFeedback?: boolean | undefined;
+  useLogin?: boolean | undefined;
+  showExplanation?: boolean | undefined;
+  useWidget?: boolean | undefined;
 };
 
 type ConfigProviderProps = {
@@ -16,10 +17,11 @@ type ConfigProviderProps = {
 const defaultConfig: Config = {
   name: "Chatbot",
   serverUrl: "http://127.0.0.1:5000/",
+  socketioPath: undefined,
   useFeedback: false,
   useLogin: false,
+  showExplanation: false,
   useWidget: false,
-  socketioPath: undefined,
 };
 
 export const ConfigContext = React.createContext<{

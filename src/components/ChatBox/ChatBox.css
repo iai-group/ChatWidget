@@ -1,8 +1,8 @@
-#chatBox .form-control {
+.chat .form-control {
     border-color: transparent;
   }
   
-#chatBox .form-control:focus {
+.chat .form-control:focus {
   border-color: transparent;
   box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -15,7 +15,7 @@
   background: #eee;
 }
 
-#chatBox .card-body{
+.chat.card-body{
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
