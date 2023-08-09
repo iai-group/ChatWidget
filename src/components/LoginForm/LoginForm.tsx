@@ -16,7 +16,7 @@ import { ConfigContext } from "../../contexts/ConfigContext";
 const LoginForm = () => {
   const { config } = useContext(ConfigContext);
   const { setUser } = useContext(UserContext);
-  const { login, onLogin, register, onRegister } = useSocket();
+  const { login, register, onAuthentication } = useSocket();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -34,21 +34,14 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    onLogin((success: boolean, error: string) => {
+    onAuthentication((success: boolean, error: string) => {
       if (success) {
         setUser({ username, isAnonymous: false });
       } else {
         setErrorMessage(error);
       }
     });
-    onRegister((success: boolean, error: string) => {
-      if (success) {
-        setUser({ username, isAnonymous: false });
-      } else {
-        setErrorMessage(error);
-      }
-    });
-  }, [onLogin, onRegister, setUser, setErrorMessage, username]);
+  }, [onAuthentication, setUser, setErrorMessage, username]);
 
   return (
     <div className="chat-widget-content">
@@ -70,6 +63,7 @@ const LoginForm = () => {
         <MDBCardBody className="login">
           <MDBCardTitle>Login</MDBCardTitle>
           <MDBInput
+            className="mb-3"
             label="Username"
             onChange={(e) => setUsername(e.target.value)}
           />

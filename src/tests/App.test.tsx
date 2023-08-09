@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { render } from "@testing-library/react";
 import App from "../App";
 import { ConfigContext } from "../contexts/ConfigContext";
@@ -10,7 +10,6 @@ test("Renders Embedded", () => {
 test("Renders Widget", () => {
   const { setConfig } = useContext(ConfigContext);
 
-  // Set the config when the component mounts
   useEffect(() => {
     const config = {
       useWidget: true,

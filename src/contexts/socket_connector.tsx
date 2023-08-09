@@ -11,8 +11,8 @@ export default function useSocketConnection(
   const [connectError, setConnectError] = useState<Error | null>(null);
   const onMessageRef = useRef<(message: ChatMessage) => void>();
   const onRestartRef = useRef<() => void>();
-  const onLoginRef = useRef<(success: boolean, error: string) => void>();
-  const onRegisterRef = useRef<(success: boolean, error: string) => void>();
+  const onAuthenticationRef =
+    useRef<(success: boolean, error: string) => void>();
 
   useEffect(() => {
     const newSocket = io(url, { path: path });
@@ -50,12 +50,9 @@ export default function useSocketConnection(
       onRestartRef.current && onRestartRef.current();
     });
 
-    newSocket.on("login_response", ({ success, error }) => {
-      onLoginRef.current && onLoginRef.current(success, error);
-    });
-
-    newSocket.on("register_response", ({ success, error }) => {
-      onRegisterRef.current && onRegisterRef.current(success, error);
+    newSocket.on("authentication", ({ success, error }) => {
+      onAuthenticationRef.current &&
+        onAuthenticationRef.current(success, error);
     });
 
     return () => {
@@ -91,16 +88,14 @@ export default function useSocketConnection(
     socket?.emit("login", { username, password });
   };
 
-  const onLogin = (callback: (success: boolean, error: string) => void) => {
-    onLoginRef.current = callback;
-  };
-
   const register = (username: string, password: string) => {
     socket?.emit("register", { username, password });
   };
 
-  const onRegister = (callback: (success: boolean, error: string) => void) => {
-    onRegisterRef.current = callback;
+  const onAuthentication = (
+    callback: (success: boolean, error: string) => void
+  ) => {
+    onAuthenticationRef.current = callback;
   };
 
   return {
@@ -112,8 +107,7 @@ export default function useSocketConnection(
     onRestart,
     onMessage,
     login,
-    onLogin,
     register,
-    onRegister,
+    onAuthentication,
   };
 }
