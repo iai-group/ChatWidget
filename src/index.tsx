@@ -43,6 +43,7 @@ window.ChatWidget = (config, containerId) => {
       useFeedback: "useFeedback" in dataset,
       useLogin: "useLogin" in dataset,
       useWidget: "useWidget" in dataset,
+      useRecommendationFrame: "useRecommendationFrame" in dataset,
     };
     if (dataset.name) config.name = dataset.name;
     if (dataset.serverUrl) config.serverUrl = dataset.serverUrl;

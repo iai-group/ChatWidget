@@ -5,6 +5,7 @@ export type Config = {
   serverUrl: string | undefined;
   useFeedback: boolean | undefined;
   useLogin: boolean | undefined;
+  useRecommendationFrame: boolean | undefined;
   useWidget?: boolean | undefined;
   socketioPath?: string | undefined;
 };
@@ -18,6 +19,7 @@ const defaultConfig: Config = {
   serverUrl: "http://127.0.0.1:5000/",
   useFeedback: false,
   useLogin: false,
+  useRecommendationFrame: false,
   useWidget: false,
   socketioPath: undefined,
 };

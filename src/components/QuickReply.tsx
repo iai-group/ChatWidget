@@ -14,7 +14,7 @@ export default function QuickReplyButton({
   };
 
   return (
-    <MDBBtn outline className="btn-sm" color="secondary" onClick={handleClick}>
+    <MDBBtn outline size="sm" color="secondary" onClick={handleClick}>
       {text}
     </MDBBtn>
   );

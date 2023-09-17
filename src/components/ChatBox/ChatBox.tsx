@@ -76,7 +76,7 @@ export default function ChatBox() {
     [chatMessagesRef, quickReply]
   );
 
-  const handelMessage = useCallback(
+  const handleMessage = useCallback(
     (message: ChatMessage) => {
       if (!!message.text) {
         const image_url = message.attachments?.find(
@@ -122,10 +122,10 @@ export default function ChatBox() {
 
   useEffect(() => {
     onMessage((message: ChatMessage) => {
-      handelMessage(message);
+      handleMessage(message);
       handleButtons(message);
     });
-  }, [onMessage, handleButtons, handelMessage]);
+  }, [onMessage, handleButtons, handleMessage]);
 
   useEffect(() => {
     onRestart(() => {

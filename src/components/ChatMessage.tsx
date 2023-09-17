@@ -26,7 +26,7 @@ function AgentChatMessage({
 }: {
   message: string;
   image_url?: string;
-  feedback: ((message: string, event: string) => void) | null;
+  feedback: ((message: string, event: number) => void) | null;
 }): JSX.Element {
   return (
     <div className="d-flex flex-row justify-content-start mb-4">

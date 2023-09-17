@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
-import { AgentMessage, UserMessage, ChatMessage } from "../types";
+import { AgentMessage, UserMessage, ChatMessage, Article } from "../types";
 
 export default function useSocketConnection(
   url: string = "http://127.0.0.1:5000",
@@ -10,6 +10,9 @@ export default function useSocketConnection(
   const [isConnected, setIsConnected] = useState(false);
   const [connectError, setConnectError] = useState<Error | null>(null);
   const onMessageRef = useRef<(message: ChatMessage) => void>();
+  const onRecommendationRef = useRef<(articles: Article[]) => void>();
+  const onBookmarkRef = useRef<(articles: Article[]) => void>();
+  const onPreferenceRef = useRef<(preference: string[]) => void>();
   const onRestartRef = useRef<() => void>();
   const onAuthenticationRef =
     useRef<(success: boolean, error: string) => void>();
@@ -46,6 +49,17 @@ export default function useSocketConnection(
       }
     });
 
+    newSocket.on("recommendations", (articles: Article[]) => {
+      onRecommendationRef.current && onRecommendationRef.current(articles);
+    });
+
+    newSocket.on("bookmarks", (articles: Article[]) => {
+      onBookmarkRef.current && onBookmarkRef.current(articles);
+    });
+    newSocket.on("preferences", (preferences: string[]) => {
+      onPreferenceRef.current && onPreferenceRef.current(preferences);
+    });
+
     newSocket.on("restart", () => {
       onRestartRef.current && onRestartRef.current();
     });
@@ -72,8 +86,47 @@ export default function useSocketConnection(
     socket?.emit("message", message);
   };
 
-  const giveFeedback = (message: string, event: string) => {
-    socket?.emit("feedback", { message: message, event: event });
+  const giveFeedback = (message: string, feedback: number) => {
+    socket?.emit("feedback", { message: message, feedback: feedback });
+  };
+
+  const giveRecommendationFeedback = (item_id: string, feedback: number) => {
+    socket?.emit("recommendation_feedback", {
+      item_id: item_id,
+      feedback: feedback,
+    });
+  };
+
+  const bookmarkArticle = (item_id: string) => {
+    socket?.emit("bookmark_article", { item_id: item_id });
+  };
+
+  const removeBookmarkedArticle = (item_id: string) => {
+    socket?.emit("remove_bookmark", { item_id: item_id });
+  };
+
+  const removePreference = (topic: string) => {
+    socket?.emit("remove_preference", { topic: topic });
+  };
+
+  const getBookmarks = () => {
+    socket?.emit("get_bookmarks", {});
+  };
+
+  const getPreferences = () => {
+    socket?.emit("get_preferences", {});
+  };
+
+  const onPreferences = (callback: (topics: string[]) => void) => {
+    onPreferenceRef.current = callback;
+  };
+
+  const onBookmarks = (callback: (articles: Article[]) => void) => {
+    onBookmarkRef.current = callback;
+  };
+
+  const onRecommendation = (callback: (articles: Article[]) => void) => {
+    onRecommendationRef.current = callback;
   };
 
   const onMessage = (callback: (response: ChatMessage) => void) => {
@@ -103,9 +156,18 @@ export default function useSocketConnection(
     startConversation,
     sendMessage,
     giveFeedback,
+    giveRecommendationFeedback,
+    bookmarkArticle,
+    removeBookmarkedArticle,
+    getBookmarks,
+    onBookmarks,
+    removePreference,
+    getPreferences,
+    onPreferences,
     quickReply,
     onRestart,
     onMessage,
+    onRecommendation,
     login,
     register,
     onAuthentication,
