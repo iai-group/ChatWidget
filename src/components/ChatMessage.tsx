@@ -1,5 +1,6 @@
 import { MDBIcon } from "mdb-react-ui-kit";
 import Feedback from "./Feedback";
+import { useEffect, useState } from "react";
 
 function UserChatMessage({ message }: { message: string }): JSX.Element {
   return (
@@ -23,11 +24,34 @@ function AgentChatMessage({
   message,
   image_url,
   feedback,
+  type_message,
 }: {
   message: string;
   image_url?: string;
   feedback: ((message: string, event: number) => void) | null;
+  type_message?: boolean;
 }): JSX.Element {
+  const [typingMessage, setTypingMessage] = useState("");
+
+  useEffect(() => {
+    if (!!type_message) {
+      let typedMessage = "";
+      let index = 0;
+
+      const typeNextChar = () => {
+        if (index < message.length) {
+          typedMessage += message[index];
+          setTypingMessage(typedMessage);
+          index++;
+          setTimeout(typeNextChar, 40); // Adjust time for typing speed
+        }
+      };
+      typeNextChar();
+    } else {
+      setTypingMessage(message);
+    }
+  }, [type_message, message]);
+
   return (
     <div className="d-flex flex-row justify-content-start mb-4">
       <div className="text-center">
@@ -50,7 +74,7 @@ function AgentChatMessage({
             />
           </div>
         )}
-        <p className="small mb-0">{message}</p>
+        <p className="small mb-0">{typingMessage}</p>
       </div>
     </div>
   );

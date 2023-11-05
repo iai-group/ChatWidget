@@ -11,16 +11,22 @@ const RecommendationItem = ({
   title: string;
   authors: string[];
 }) => {
-  const { giveRecommendationFeedback, bookmarkArticle } = useSocket();
+  const { bookmarkArticle } = useSocket();
+  // const { giveRecommendationFeedback, bookmarkArticle } = useSocket();
 
   const handleSummaryClick = () => {};
-  const handlePositiveFeedback = () => {
-    giveRecommendationFeedback(article_id, 1);
-  };
-  const handleNegativeFeedback = () => {
-    giveRecommendationFeedback(article_id, -1);
-  };
-  const handleBookmarkClick = () => {
+  // const handlePositiveFeedback = () => {
+  //   giveRecommendationFeedback(article_id, 1);
+  // };
+  // const handleNegativeFeedback = () => {
+  //   giveRecommendationFeedback(article_id, -1);
+  // };
+  const handleBookmarkClick = (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => {
+    const target = event.target as HTMLElement;
+    target.classList.add("disabled");
+
     bookmarkArticle(article_id);
   };
 
@@ -51,7 +57,7 @@ const RecommendationItem = ({
           >
             Bookmark
           </MDBBtn>
-          <MDBBtn
+          {/* <MDBBtn
             size="sm"
             className="btn-secondary me-2"
             style={{ width: "122px" }}
@@ -66,7 +72,7 @@ const RecommendationItem = ({
             onClick={handleNegativeFeedback}
           >
             Less like this
-          </MDBBtn>
+          </MDBBtn> */}
         </div>
       </MDBCardBody>
     </MDBCard>

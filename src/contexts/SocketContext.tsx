@@ -1,10 +1,9 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import useSocketConnection from "./socket_connector";
+import { ConfigContext } from "./ConfigContext";
 
 interface SocketProviderProps {
   children: ReactNode;
-  url?: string;
-  path?: string;
 }
 
 const SocketContext = createContext<ReturnType<
@@ -19,12 +18,12 @@ export const useSocket = () => {
   return context;
 };
 
-export const SocketProvider: React.FC<SocketProviderProps> = ({
-  children,
-  url,
-  path,
-}) => {
-  const socketMethods = useSocketConnection(url, path);
+export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  const { config } = useContext(ConfigContext);
+  const socketMethods = useSocketConnection(
+    config.serverUrl,
+    config.socketioPath
+  );
 
   return (
     <SocketContext.Provider value={socketMethods}>

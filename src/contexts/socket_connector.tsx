@@ -3,7 +3,7 @@ import io, { Socket } from "socket.io-client";
 import { AgentMessage, UserMessage, ChatMessage, Article } from "../types";
 
 export default function useSocketConnection(
-  url: string = "http://127.0.0.1:5000",
+  url: string | undefined,
   path: string | undefined
 ) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -18,6 +18,11 @@ export default function useSocketConnection(
     useRef<(success: boolean, error: string) => void>();
 
   useEffect(() => {
+    if (!url) {
+      console.error("Missing server url");
+      return;
+    }
+
     const newSocket = io(url, { path: path });
     setSocket(newSocket);
 
@@ -117,6 +122,10 @@ export default function useSocketConnection(
     socket?.emit("get_preferences", {});
   };
 
+  const setStyle = (style: boolean) => {
+    socket?.emit("set_style", { style: style });
+  };
+
   const onPreferences = (callback: (topics: string[]) => void) => {
     onPreferenceRef.current = callback;
   };
@@ -164,6 +173,7 @@ export default function useSocketConnection(
     removePreference,
     getPreferences,
     onPreferences,
+    setStyle,
     quickReply,
     onRestart,
     onMessage,

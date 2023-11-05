@@ -1,12 +1,12 @@
 import React, { useState, ReactNode } from "react";
 
 export type Config = {
-  name: string | undefined;
-  serverUrl: string | undefined;
-  useFeedback: boolean | undefined;
-  useLogin: boolean | undefined;
-  useRecommendationFrame: boolean | undefined;
-  useWidget?: boolean | undefined;
+  name: string;
+  serverUrl: string;
+  useFeedback: boolean | false;
+  useLogin: boolean | false;
+  useRecommendationFrame: boolean | false;
+  useWidget: boolean | false;
   socketioPath?: string | undefined;
 };
 

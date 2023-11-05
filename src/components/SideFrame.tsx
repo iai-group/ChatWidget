@@ -9,7 +9,7 @@ import {
 } from "mdb-react-ui-kit";
 import RecommendationFrame from "./Recommendation/RecommendationFrame";
 import BookmarkFrame from "./UserItems/BookmarkFrame";
-import UserPreferences from "./UserItems/PreferencesFrame";
+// import UserPreferences from "./UserItems/PreferencesFrame";
 
 const SideFrame: React.FC = () => {
   const [activeTab, setActiveTab] = useState("recommendation");
@@ -38,17 +38,17 @@ const SideFrame: React.FC = () => {
             onClick={() => toggleTab("bookmarks")}
             active={activeTab === "bookmarks"}
           >
-            My Articles
+            Saved Articles
           </MDBTabsLink>
         </MDBTabsItem>
-        <MDBTabsItem>
+        {/* <MDBTabsItem>
           <MDBTabsLink
             onClick={() => toggleTab("preferences")}
             active={activeTab === "preferences"}
           >
             My Preferences
           </MDBTabsLink>
-        </MDBTabsItem>
+        </MDBTabsItem> */}
       </MDBTabs>
       <MDBTabsContent>
         <MDBTabsPane show={activeTab === "recommendation"}>
@@ -61,9 +61,9 @@ const SideFrame: React.FC = () => {
         <MDBTabsPane show={activeTab === "bookmarks"}>
           <BookmarkFrame isActive={activeTab === "bookmarks"} />
         </MDBTabsPane>
-        <MDBTabsPane show={activeTab === "preferences"}>
+        {/* <MDBTabsPane show={activeTab === "preferences"}>
           <UserPreferences isActive={activeTab === "preferences"} />
-        </MDBTabsPane>
+        </MDBTabsPane> */}
       </MDBTabsContent>
     </MDBContainer>
   );

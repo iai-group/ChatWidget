@@ -16,6 +16,7 @@ import {
   MDBCardBody,
   MDBIcon,
   MDBCardFooter,
+  MDBSwitch,
 } from "mdb-react-ui-kit";
 import { AgentChatMessage, UserChatMessage } from "../ChatMessage";
 import { ChatMessage } from "../../types";
@@ -31,10 +32,12 @@ export default function ChatBox() {
     onMessage,
     onRestart,
     giveFeedback,
+    setStyle,
   } = useSocket();
   const [chatMessages, setChatMessages] = useState<JSX.Element[]>([]);
   const [chatButtons, setChatButtons] = useState<JSX.Element[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [isStyleSwitchOn, setIsStyleSwitchOn] = useState(false);
   const chatMessagesRef = useRef(chatMessages);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -79,6 +82,7 @@ export default function ChatBox() {
   const handleMessage = useCallback(
     (message: ChatMessage) => {
       if (!!message.text) {
+        const text = message.text as string;
         const image_url = message.attachments?.find(
           (attachment) => attachment.type === "images"
         )?.payload.images?.[0];
@@ -86,13 +90,14 @@ export default function ChatBox() {
           <AgentChatMessage
             key={chatMessagesRef.current.length}
             feedback={config.useFeedback ? giveFeedback : null}
-            message={message.text}
+            message={text}
             image_url={image_url}
+            type_message={!isStyleSwitchOn}
           />
         );
       }
     },
-    [giveFeedback, chatMessagesRef, config]
+    [giveFeedback, chatMessagesRef, config, isStyleSwitchOn]
   );
 
   const handleButtons = useCallback(
@@ -134,6 +139,12 @@ export default function ChatBox() {
     });
   }, [onRestart]);
 
+  const handleStyleSwitch = () => {
+    const newStyle = !isStyleSwitchOn;
+    setIsStyleSwitchOn(newStyle);
+    setStyle(newStyle);
+  };
+
   return (
     <div className="chat-widget-content">
       <MDBCard
@@ -149,7 +160,11 @@ export default function ChatBox() {
           }}
         >
           <p className="mb-0 fw-bold">{config.name}</p>
-          <p className="mb-0 fw-bold">{user?.username}</p>
+          <div className="mb-0 d-flex align-items-center">
+            <p className="mb-0 fw-bold">{user?.username}</p>
+            <p className="mb-0 fw-bold mx-2">Involved style: </p>
+            <MDBSwitch checked={isStyleSwitchOn} onChange={handleStyleSwitch} />
+          </div>
         </MDBCardHeader>
 
         <MDBCardBody>
