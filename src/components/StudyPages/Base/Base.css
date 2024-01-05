@@ -1,0 +1,16 @@
+.base-component .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #e2e2e2; /* Example color - change as needed */
+    padding: 10px; /* Add padding for spacing */
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure it stays above other content */
+  }
+
+  .base-component .content-container {
+    display: flex;
+    justify-content: center;
+  }
+  

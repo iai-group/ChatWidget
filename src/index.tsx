@@ -2,13 +2,8 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./index.css";
 
-import React, { useContext, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  Config,
-  ConfigContext,
-  ConfigProvider,
-} from "./contexts/ConfigContext";
+import { Config, ConfigProvider } from "./contexts/ConfigContext";
 import { UserProvider } from "./contexts/UserContext";
 import App from "./App";
 
@@ -16,16 +11,6 @@ import reportWebVitals from "./reportWebVitals";
 import { SocketProvider } from "./contexts/SocketContext";
 
 let root: ReactDOM.Root;
-
-const ConfigLoader: React.FC<{ config: Partial<Config> }> = ({ config }) => {
-  const { setConfig } = useContext(ConfigContext);
-
-  useEffect(() => {
-    setConfig((prevConfig) => ({ ...prevConfig, ...config }));
-  }, [config, setConfig]);
-
-  return <App />;
-};
 
 declare global {
   interface Window {
@@ -48,6 +33,7 @@ window.ChatWidget = (config, containerId) => {
     if (dataset.name) config.name = dataset.name;
     if (dataset.serverUrl) config.serverUrl = dataset.serverUrl;
     if (dataset.socketioPath) config.socketioPath = dataset.socketioPath;
+    if (dataset.mode) config.mode = dataset.mode;
   }
 
   if (!root) {
@@ -58,7 +44,7 @@ window.ChatWidget = (config, containerId) => {
     <ConfigProvider>
       <SocketProvider>
         <UserProvider>
-          <ConfigLoader config={config} />
+          <App user_config={config} />
         </UserProvider>
       </SocketProvider>
     </ConfigProvider>

@@ -1,7 +1,7 @@
 import { MDBContainer } from "mdb-react-ui-kit";
-import { useSocket } from "../../contexts/SocketContext";
+import { useSocket } from "../../../contexts/SocketContext";
 import { useCallback, useEffect, useState } from "react";
-import { Article } from "../../types";
+import { Article } from "../../../types";
 import BookmarkItem from "./BookmarkItem";
 
 const BookmarkFrame = ({ isActive }: { isActive: boolean }) => {

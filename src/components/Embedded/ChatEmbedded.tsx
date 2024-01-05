@@ -4,9 +4,15 @@ import { ReactNode, useContext } from "react";
 
 import { MDBContainer, MDBRow, MDBCol } from "mdb-react-ui-kit";
 
-import SideFrame from "../SideFrame";
+import SideFrame from "../SideFrame/SideFrame";
 
-export default function ChatEmbedded({ children }: { children: ReactNode }) {
+export default function ChatEmbedded({
+  children,
+  task_index,
+}: {
+  children: ReactNode;
+  task_index: number;
+}) {
   const { config } = useContext(ConfigContext);
 
   if (config.useRecommendationFrame) {
@@ -15,7 +21,7 @@ export default function ChatEmbedded({ children }: { children: ReactNode }) {
         <MDBRow>
           <MDBCol md="6">{children}</MDBCol>
           <MDBCol md="6">
-            <SideFrame />
+            <SideFrame task_index={task_index} />
           </MDBCol>
         </MDBRow>
       </MDBContainer>

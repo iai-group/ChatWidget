@@ -13,6 +13,7 @@
     "mdb-react-ui-kit": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "socket.io": "^4.6.0",
     "socket.io-client": "^4.6.0",

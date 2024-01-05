@@ -1,33 +1,65 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import io, { Socket } from "socket.io-client";
-import { AgentMessage, UserMessage, ChatMessage, Article } from "../types";
+import {
+  UserMessage,
+  AgentMessage,
+  ChatMessage,
+  Article,
+  Settings,
+  Query,
+} from "../types";
+import { ConfigContext, Mode } from "./ConfigContext";
 
-export default function useSocketConnection(
-  url: string | undefined,
-  path: string | undefined
-) {
+const defaultSettings: Settings = {
+  style: {
+    name: "default",
+    showStyleSwitch: false,
+  },
+};
+
+export default function useSocketConnection() {
+  const { config } = useContext(ConfigContext);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [connectError, setConnectError] = useState<Error | null>(null);
+  const [settings, setSettings] = useState<Settings>();
   const onMessageRef = useRef<(message: ChatMessage) => void>();
   const onRecommendationRef = useRef<(articles: Article[]) => void>();
   const onBookmarkRef = useRef<(articles: Article[]) => void>();
   const onPreferenceRef = useRef<(preference: string[]) => void>();
+  // const onTaskDetailsRef = useRef<(TaskDetails: TaskDetails) => void>();
   const onRestartRef = useRef<() => void>();
   const onAuthenticationRef =
     useRef<(success: boolean, error: string) => void>();
 
+  const mergeSettings = (incomingData?: Settings) => {
+    if (!incomingData) {
+      return defaultSettings;
+    }
+
+    return {
+      ...defaultSettings,
+      ...incomingData,
+      style: {
+        ...defaultSettings.style,
+        ...incomingData.style,
+      },
+    };
+  };
+
   useEffect(() => {
-    if (!url) {
+    if (!config.serverUrl) {
       console.error("Missing server url");
       return;
     }
 
-    const newSocket = io(url, { path: path });
+    const newSocket = io(config.serverUrl, {
+      path: config.socketioPath,
+    });
     setSocket(newSocket);
 
     newSocket.on("connect_error", (error) => {
-      console.error("Connection error", error);
+      console.warn("Connection Error: ", error);
       setConnectError(error); // Set connection error
     });
 
@@ -43,6 +75,11 @@ export default function useSocketConnection(
 
     newSocket.on("disconnect", () => {
       setIsConnected(false);
+    });
+
+    newSocket.on("init", (settings?: Settings) => {
+      const mergedSettings = mergeSettings(settings);
+      setSettings(mergedSettings);
     });
 
     newSocket.on("message", (response: AgentMessage) => {
@@ -61,9 +98,14 @@ export default function useSocketConnection(
     newSocket.on("bookmarks", (articles: Article[]) => {
       onBookmarkRef.current && onBookmarkRef.current(articles);
     });
+
     newSocket.on("preferences", (preferences: string[]) => {
       onPreferenceRef.current && onPreferenceRef.current(preferences);
     });
+
+    // newSocket.on("task_details", (taskDetails: TaskDetails) => {
+    //   onTaskDetailsRef.current && onTaskDetailsRef.current(taskDetails);
+    // });
 
     newSocket.on("restart", () => {
       onRestartRef.current && onRestartRef.current();
@@ -77,7 +119,14 @@ export default function useSocketConnection(
     return () => {
       newSocket.disconnect();
     };
-  }, [url, path]);
+  }, [config.mode, config.serverUrl, config.socketioPath]);
+
+  useEffect(() => {
+    if (connectError) {
+      // TODO handle connection error
+      console.error("Connection error", connectError);
+    }
+  });
 
   const startConversation = () => {
     socket?.emit("start_conversation", {});
@@ -122,8 +171,24 @@ export default function useSocketConnection(
     socket?.emit("get_preferences", {});
   };
 
-  const setStyle = (style: boolean) => {
+  // const getTaskDetails = () => {
+  //   socket?.emit("get_task_details", {});
+  // };
+
+  const setStyle = (style: string) => {
     socket?.emit("set_style", { style: style });
+  };
+
+  const logEvent = (data?: {
+    [key: string]: string | number | boolean | object;
+  }) => {
+    const to_log: Record<string, any> = {
+      timestamp: new Date().toISOString(),
+      page: window.location.pathname.split("/").pop(),
+      ...window.localStorage,
+      ...data,
+    };
+    socket?.emit("log_event", to_log);
   };
 
   const onPreferences = (callback: (topics: string[]) => void) => {
@@ -133,6 +198,10 @@ export default function useSocketConnection(
   const onBookmarks = (callback: (articles: Article[]) => void) => {
     onBookmarkRef.current = callback;
   };
+
+  // const onTaskDetails = (callback: (taskDetails: TaskDetails) => void) => {
+  //   onTaskDetailsRef.current = callback;
+  // };
 
   const onRecommendation = (callback: (articles: Article[]) => void) => {
     onRecommendationRef.current = callback;
@@ -160,8 +229,16 @@ export default function useSocketConnection(
     onAuthenticationRef.current = callback;
   };
 
+  const reloadSocketConnection = () => {
+    if (socket) {
+      socket.disconnect();
+      socket.connect();
+    }
+  };
+
   return {
     isConnected,
+    settings,
     startConversation,
     sendMessage,
     giveFeedback,
@@ -173,7 +250,10 @@ export default function useSocketConnection(
     removePreference,
     getPreferences,
     onPreferences,
+    // getTaskDetails,
+    // onTaskDetails,
     setStyle,
+    logEvent,
     quickReply,
     onRestart,
     onMessage,
@@ -181,5 +261,6 @@ export default function useSocketConnection(
     login,
     register,
     onAuthentication,
+    reloadSocketConnection,
   };
 }

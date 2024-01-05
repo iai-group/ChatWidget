@@ -1,5 +1,11 @@
 import React, { useState, ReactNode } from "react";
 
+export enum Mode {
+  DEFAULT = "default",
+  STYLE_TEST = "style_test",
+  STUDY = "study",
+}
+
 export type Config = {
   name: string;
   serverUrl: string;
@@ -8,6 +14,7 @@ export type Config = {
   useRecommendationFrame: boolean | false;
   useWidget: boolean | false;
   socketioPath?: string | undefined;
+  mode?: string;
 };
 
 type ConfigProviderProps = {
@@ -22,6 +29,7 @@ const defaultConfig: Config = {
   useRecommendationFrame: false,
   useWidget: false,
   socketioPath: undefined,
+  mode: Mode.DEFAULT,
 };
 
 export const ConfigContext = React.createContext<{

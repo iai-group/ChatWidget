@@ -1,4 +1,5 @@
 import { MDBCard, MDBCardBody, MDBCardText, MDBBtn } from "mdb-react-ui-kit";
+import { useSocket } from "../../../contexts/SocketContext";
 
 const BookmarkItem = ({
   article_id,
@@ -11,6 +12,15 @@ const BookmarkItem = ({
   authors: string[];
   handleRemoveBookmaredkArticle: (article_id: string) => void;
 }) => {
+  const { logEvent } = useSocket();
+  const removeBookmarkedArticle = () => {
+    logEvent({
+      event: "Remove bookmarked article",
+      metadata: { article_id: article_id },
+    });
+    handleRemoveBookmaredkArticle(article_id);
+  };
+
   return (
     <MDBCard className="mb-3">
       <MDBCardBody
@@ -33,7 +43,7 @@ const BookmarkItem = ({
             width: "24px",
             flexShrink: 0,
           }}
-          onClick={() => handleRemoveBookmaredkArticle(article_id)}
+          onClick={removeBookmarkedArticle}
         >
           X
         </MDBBtn>

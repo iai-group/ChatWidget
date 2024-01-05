@@ -26,6 +26,7 @@ export type AgentMessage = {
 
 export type UserMessage = {
   message: string;
+  metadata?: { [key: string]: any };
 };
 
 export type Article = {
@@ -34,5 +35,20 @@ export type Article = {
   abstract: string;
   authors: string[];
   score: number;
-  explanation: string;
 };
+
+export type Settings = {
+  style?: ChatMessageStyle;
+};
+
+export type ChatMessageStyle = {
+  name?: string;
+  showStyleSwitch?: boolean;
+};
+
+export type Query = {
+  mode?: string;
+  token?: string;
+};
+
+export type EventHandler = (event?: any) => void;

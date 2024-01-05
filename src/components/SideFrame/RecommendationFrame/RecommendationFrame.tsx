@@ -1,7 +1,7 @@
 import RecommendationItem from "./RecommendationItem";
-import { useSocket } from "../../contexts/SocketContext";
+import { useSocket } from "../../../contexts/SocketContext";
 import { useEffect, useState } from "react";
-import { Article } from "../../types";
+import { Article } from "../../../types";
 
 const RecommendationFrame = ({
   onFrameUpdate,
@@ -17,10 +17,8 @@ const RecommendationFrame = ({
     onRecommendation((articles: Article[]) => {
       const recommendationItems = articles.map((article, index) => (
         <RecommendationItem
-          key={index}
-          article_id={article.item_id}
-          title={article.title}
-          authors={article.authors}
+          key={`${index}-${article.item_id}`}
+          article={article}
         />
       ));
       setRecommendationsState(recommendationItems);
