@@ -1,8 +1,12 @@
-import BaseComponent from "./Base/Base";
-import { AppRoutes } from "../../routes";
+import BaseComponent from "../Base/Base";
+import { AppRoutes } from "../../../routes";
 
 export default function PreTask({ user_id }: { user_id: string }) {
   const form_url = `https://docs.google.com/forms/d/e/1FAIpQLSeQbuTnegBwCcEeZAPRATqLy4MseuKhZsKGvez-Me6MmWjFiw/viewform?usp=pp_url&entry.1573045245=${user_id}&embedded=true`;
+
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
 
   return (
     <BaseComponent
@@ -11,10 +15,11 @@ export default function PreTask({ user_id }: { user_id: string }) {
       nextPath={AppRoutes.INSTRUCTIONS}
     >
       <iframe
+        onLoad={scrollToTop}
         src={form_url}
         style={{
           width: "640px",
-          height: "1826px",
+          height: "1764px",
           border: "0",
         }}
         title="Google Form"

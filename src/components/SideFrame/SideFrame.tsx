@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   MDBContainer,
   MDBTabs,
@@ -7,10 +7,11 @@ import {
   MDBTabsContent,
   MDBTabsPane,
 } from "mdb-react-ui-kit";
-import RecommendationFrame from "./RecommendationFrame/RecommendationFrame";
-import BookmarkFrame from "./BookmarkFrame/BookmarkFrame";
 import ResearchTopicFrame from "./ResearchTopicFrame/ResearchTopicFrame";
 import { useSocket } from "../../contexts/SocketContext";
+import { Article } from "../../types";
+import RecommendationItem from "./RecommendationFrame/RecommendationItem";
+import BookmarkItem from "./BookmarkFrame/BookmarkItem";
 // import UserPreferences from "./UserItems/PreferencesFrame";
 
 type SideFrameProps = {
@@ -18,23 +19,90 @@ type SideFrameProps = {
 };
 
 const SideFrame: React.FC<SideFrameProps> = ({ task_index }) => {
-  const { logEvent } = useSocket();
+  const {
+    onRecommendation,
+    bookmarkArticle,
+    logEvent,
+    getBookmarks,
+    onBookmarks,
+    removeBookmarkedArticle,
+  } = useSocket();
   const [activeTab, setActiveTab] = useState("RT");
+  const [bookmarkState, setBookmarkState] = useState<Article[]>([]);
+  const [recommendationsState, setRecommendationsState] = useState<Article[]>(
+    []
+  );
 
-  const toggleTab = (tab: string) => {
-    logEvent({
-      event: "Tab change",
-      metadata: { tab: tab },
+  useEffect(() => {
+    getBookmarks();
+  }, []);
+
+  const toggleTab = useCallback(
+    (tab: string) => {
+      logEvent({
+        event: "Tab change",
+        metadata: { tab: tab },
+      });
+      if (activeTab !== tab) setActiveTab(tab);
+    },
+    [activeTab, logEvent]
+  );
+
+  useEffect(() => {
+    onRecommendation((articles: Article[]) => {
+      setRecommendationsState(articles);
+      toggleTab("recommendation");
     });
-    if (activeTab !== tab) setActiveTab(tab);
+  }, [onRecommendation, toggleTab]);
+
+  useEffect(() => {
+    onBookmarks((articles: Article[]) => {
+      setBookmarkState(articles);
+    });
+  }, [onBookmarks]);
+
+  const checkIsBookmarked = (article_id: string) => {
+    return bookmarkState.some((item) => item.item_id === article_id);
   };
 
-  const activateRecommendationsTab = () => {
+  const toggleBookmarkClick = (article_id: string) => {
+    if (checkIsBookmarked(article_id)) {
+      handleRemoveBookmaredkArticle(article_id);
+    } else {
+      handleBookmarkClick(article_id);
+    }
+  };
+
+  const handleBookmarkClick = (article_id: string) => {
+    if (checkIsBookmarked(article_id)) return;
+    const article = recommendationsState.find(
+      (item) => item.item_id === article_id
+    );
+    if (!article) {
+      logEvent({
+        event: "Error",
+        metadata: { article_id: article_id, error: "Article not found" },
+      });
+      return;
+    }
     logEvent({
-      event: "Tab change",
-      metadata: { tab: "recommendation" },
+      event: "Bookmark article",
+      metadata: { article_id: article_id },
     });
-    setActiveTab("recommendation");
+    bookmarkArticle(article.item_id);
+    setBookmarkState((prev) => [...prev, article]);
+  };
+
+  const handleRemoveBookmaredkArticle = (article_id: string) => {
+    if (!checkIsBookmarked(article_id)) return;
+    logEvent({
+      event: "Remove bookmarked article",
+      metadata: { article_id: article_id },
+    });
+    removeBookmarkedArticle(article_id);
+    setBookmarkState((prev) =>
+      prev.filter((item) => item.item_id !== article_id)
+    );
   };
 
   return (
@@ -42,7 +110,7 @@ const SideFrame: React.FC<SideFrameProps> = ({ task_index }) => {
       <MDBTabs className="mb-2">
         <MDBTabsItem>
           <MDBTabsLink
-            onClick={(event) => toggleTab("RT")}
+            onClick={() => toggleTab("RT")}
             active={activeTab === "RT"}
           >
             Research Topic
@@ -50,7 +118,7 @@ const SideFrame: React.FC<SideFrameProps> = ({ task_index }) => {
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
-            onClick={(event) => toggleTab("recommendation")}
+            onClick={() => toggleTab("recommendation")}
             active={activeTab === "recommendation"}
           >
             Recommendations
@@ -58,7 +126,7 @@ const SideFrame: React.FC<SideFrameProps> = ({ task_index }) => {
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink
-            onClick={(event) => toggleTab("bookmarks")}
+            onClick={() => toggleTab("bookmarks")}
             active={activeTab === "bookmarks"}
           >
             Bookmarks
@@ -85,11 +153,35 @@ const SideFrame: React.FC<SideFrameProps> = ({ task_index }) => {
               overflowY: "auto",
             }}
           >
-            <RecommendationFrame onFrameUpdate={activateRecommendationsTab} />
+            {recommendationsState.map((article, index) => (
+              <RecommendationItem
+                key={article.item_id + "test"}
+                article={article}
+                isBookmarked={checkIsBookmarked(article.item_id)}
+                toggleBookmarkClick={() => toggleBookmarkClick(article.item_id)}
+              />
+            ))}
           </div>
         </MDBTabsPane>
         <MDBTabsPane show={activeTab === "bookmarks"}>
-          <BookmarkFrame isActive={activeTab === "bookmarks"} />
+          <MDBContainer>
+            <div
+              style={{
+                maxHeight: "max(600px, calc(100vh - 200px))",
+                overflowY: "auto",
+              }}
+            >
+              {bookmarkState.map((article, index) => (
+                <BookmarkItem
+                  key={article.item_id}
+                  article_id={article.item_id}
+                  title={article.title}
+                  authors={article.authors}
+                  handleRemoveBookmaredkArticle={handleRemoveBookmaredkArticle}
+                />
+              ))}
+            </div>
+          </MDBContainer>
         </MDBTabsPane>
         {/* <MDBTabsPane show={activeTab === "preferences"}>
           <UserPreferences isActive={activeTab === "preferences"} />

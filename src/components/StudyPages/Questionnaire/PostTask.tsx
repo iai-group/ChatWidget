@@ -1,8 +1,12 @@
-import BaseComponent from "./Base/Base";
-import { AppRoutes } from "../../routes";
+import BaseComponent from "../Base/Base";
+import { AppRoutes } from "../../../routes";
 
 export default function PostTask({ user_id }: { user_id: string }) {
   const form_url = `https://docs.google.com/forms/d/e/1FAIpQLScfkasBZ7S7Dw1HfZKMmRRUExDjNFSpaaRaG6vVaB1nGioizg/viewform?usp=pp_url&entry.1506333392=${user_id}&embedded=true`;
+
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
 
   return (
     <BaseComponent
@@ -11,10 +15,11 @@ export default function PostTask({ user_id }: { user_id: string }) {
       nextPath={AppRoutes.TASK}
     >
       <iframe
+        onLoad={scrollToTop}
         src={form_url}
         style={{
           width: "640px",
-          height: "1826px",
+          height: "2588px",
           border: "0",
         }}
         title="Google Form"

@@ -24,12 +24,12 @@ const BookmarkItem = ({
   return (
     <MDBCard className="mb-3">
       <MDBCardBody
-        className="d-flex justify-content-between"
+        className="d-flex flex-column justify-content-between"
         style={{ padding: "1.5rem .5rem" }}
       >
         <MDBCardText style={{ fontSize: "13px" }}>{title}</MDBCardText>
         {authors && (
-          <MDBCardText style={{ fontSize: "13px" }}>
+          <MDBCardText style={{ fontSize: "12px" }}>
             {authors.join(", ")}
           </MDBCardText>
         )}

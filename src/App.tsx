@@ -2,10 +2,10 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Config, ConfigContext } from "./contexts/ConfigContext";
 import Welcome from "./components/StudyPages/Welcome";
-import PreTask from "./components/StudyPages/PreTask";
+import PreTask from "./components/StudyPages/Questionnaire/PreTask";
 import Instructions from "./components/StudyPages/Instructions";
-import PostTask from "./components/StudyPages/PostTask";
-import PostAllTasks from "./components/StudyPages/PostAllTasks";
+import PostTask from "./components/StudyPages/Questionnaire/PostTask";
+import PostAllTasks from "./components/StudyPages/Questionnaire/PostAllTasks";
 import Last from "./components/StudyPages/Last";
 import { AppRoutes } from "./routes";
 import Task from "./components/StudyPages/Task/Task";
@@ -39,6 +39,7 @@ export default function App({
         return token;
       }
     }
+    localStorage.clear();
     return generateToken();
   }, []);
 

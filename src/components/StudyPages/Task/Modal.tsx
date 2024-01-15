@@ -35,11 +35,10 @@ const Modal = ({
           <MDBModalBody>
             {/* <p>{taskDetails.body}</p> */}
             <p>
-              Your task is to identify and select between{" "}
-              <strong>5-10 research papers</strong> based on the provided
-              research topic. Use the conversational recommender system to
-              discover papers. <strong>Bookmark</strong> papers you find
-              relevant.
+              Your task is to identify and select{" "}
+              <strong>5 research papers</strong> based on the provided research
+              topic. Use the conversational recommender system to discover
+              papers. <strong>Bookmark</strong> papers you find relevant.
             </p>
             <p>
               For this task{" "}

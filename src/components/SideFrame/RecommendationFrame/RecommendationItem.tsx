@@ -5,13 +5,19 @@ import {
   MDBBtn,
   MDBCollapse,
 } from "mdb-react-ui-kit";
-import { useSocket } from "../../../contexts/SocketContext";
 import "./RecommendationItem.css";
 import { Article } from "../../../types";
 import { useState } from "react";
 
-const RecommendationItem = ({ article }: { article: Article }) => {
-  const { bookmarkArticle, logEvent } = useSocket();
+const RecommendationItem = ({
+  article,
+  isBookmarked,
+  toggleBookmarkClick,
+}: {
+  article: Article;
+  isBookmarked: boolean;
+  toggleBookmarkClick: () => void;
+}) => {
   // const { giveRecommendationFeedback, bookmarkArticle } = useSocket();
   const [showSummary, setShowSummary] = useState(false);
 
@@ -24,18 +30,6 @@ const RecommendationItem = ({ article }: { article: Article }) => {
   // const handleNegativeFeedback = () => {
   //   giveRecommendationFeedback(article_id, -1);
   // };
-  const handleBookmarkClick = (
-    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
-  ) => {
-    const target = event.target as HTMLElement;
-    target.classList.add("disabled");
-
-    logEvent({
-      event: "Bookmark article",
-      metadata: { article_id: article.item_id },
-    });
-    bookmarkArticle(article.item_id);
-  };
 
   return (
     <MDBCard
@@ -64,10 +58,11 @@ const RecommendationItem = ({ article }: { article: Article }) => {
             Summary
           </MDBBtn>
           <MDBBtn
+            // disabled={isBookmarked}
             size="sm"
-            className="btn-secondary me-2"
+            className={`me-2 ${isBookmarked ? "btn-danger" : "btn-secondary"}`}
             style={{ width: "100px" }}
-            onClick={handleBookmarkClick}
+            onClick={toggleBookmarkClick}
           >
             Bookmark
           </MDBBtn>
@@ -90,7 +85,10 @@ const RecommendationItem = ({ article }: { article: Article }) => {
         </div>
         <MDBCollapse show={showSummary}>
           <div className="mt-3">
-            <p style={{ fontSize: "14px" }}>{article.abstract}</p>
+            <p
+              style={{ fontSize: "14px" }}
+              dangerouslySetInnerHTML={{ __html: article.abstract }}
+            />
           </div>
         </MDBCollapse>
       </MDBCardBody>

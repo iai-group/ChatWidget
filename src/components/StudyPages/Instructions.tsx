@@ -12,14 +12,16 @@ export default function Instructions() {
         <div className="task-description" style={{ marginBottom: "20px" }}>
           <h2>Tasks</h2>
           <p>
-            In the following tasks, you will assume the role of a mentor, tasked
-            with compiling a set of <strong>5-10 research papers</strong> on a
-            given research topic. These papers will serve as a foundational
-            resource for a student to develop the 'related work' section of a
-            research paper on the specific topic. To compile your selections,
-            simply <strong>bookmark</strong> your choices using the provided
-            bookmark button. When you are satisfied with your selections, press{" "}
-            <strong>Done</strong> in the top right corner of the page.
+            In the following tasks, assume the role of a student tasked with
+            compiling a set <strong>5 research papers</strong> on a given
+            research topic. These papers are expected to serve as a foundational
+            resource on the specific topic for developing the 'related work'
+            section of a research project that you are working on. Simply
+            bookmark your choices using the provided bookmark button to compile
+            your selections. When you are satisfied with your selections, press{" "}
+            <strong>Done</strong> in the top right corner of the page. Note that
+            you can add and remove bookmarks without restrictions throughout the
+            course of the task.
           </p>
         </div>
 
@@ -56,7 +58,13 @@ export default function Instructions() {
           <p>
             Before moving on to the tasks you are welcome to test out the agent{" "}
             <strong>
-              <a href="https://gustav1.ux.uis.no/ada/test/">here</a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://gustav1.ux.uis.no/ada/test/"
+              >
+                here
+              </a>
             </strong>
             . You can try to find some papers relevant to{" "}
             <strong>your research topic</strong>.

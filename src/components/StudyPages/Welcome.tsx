@@ -19,13 +19,14 @@ export default function Welcome() {
         <div className="study-focus" style={{ marginBottom: "20px" }}>
           <h3>About the Study</h3>
           <p>
-            This study explores the impact of different conversational styles in
+            This study explores the impact of different conversational styles on
             human-agent interaction. It is split into three tasks. In the first
-            two you will encounter two distinct styles of conversational agents.
-            These styles are designed to offer varied experiences in terms of
-            interaction and information delivery. In the final task, you will be
-            given the choice to select the conversational style you prefer for
-            the agent to use.
+            two, you will encounter two distinct styles of conversational
+            agents. These styles are designed to offer varied experiences in
+            terms of interaction and information delivery. In the final task,
+            you will be given the choice to select the conversational style you
+            prefer for the agent to use, and you can toggle between the two
+            styles if you would like to.
           </p>
         </div>
 
