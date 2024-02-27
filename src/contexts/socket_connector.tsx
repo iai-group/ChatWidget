@@ -42,6 +42,7 @@ export default function useSocketConnection(
         console.log(response.info);
       }
       if (response.message) {
+        console.log(response.message);
         onMessageRef.current && onMessageRef.current(response.message);
       }
     });

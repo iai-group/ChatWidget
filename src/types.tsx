@@ -9,7 +9,14 @@ export type ChatMessageAttachment = {
   payload: {
     images?: string[];
     buttons?: ChatMessageButton[];
+    text?: string;
+    raw?: string;
   };
+};
+
+export type ExplanationState = {
+  text?: string;
+  raw?: string;
 };
 
 export type ChatMessage = {

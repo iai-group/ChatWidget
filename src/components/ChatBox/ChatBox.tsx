@@ -16,10 +16,13 @@ import {
   MDBCardBody,
   MDBIcon,
   MDBCardFooter,
+  MDBRow,
+  MDBCol,
 } from "mdb-react-ui-kit";
 import { AgentChatMessage, UserChatMessage } from "../ChatMessage";
-import { ChatMessage } from "../../types";
+import { ChatMessage, ExplanationState } from "../../types";
 import { ConfigContext } from "../../contexts/ConfigContext";
+import UserModelComponent from "../UserModel/UserModel";
 
 export default function ChatBox() {
   const { config } = useContext(ConfigContext);
@@ -37,6 +40,12 @@ export default function ChatBox() {
   const [inputValue, setInputValue] = useState<string>("");
   const chatMessagesRef = useRef(chatMessages);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showUserModel, setShowUserModel] = useState(false);
+  const [userModel, setUserModel] = useState<ExplanationState>();
+
+  const toggleUserModel = () => {
+    setShowUserModel(!showUserModel);
+  };
 
   useEffect(() => {
     startConversation();
@@ -91,6 +100,12 @@ export default function ChatBox() {
           />
         );
       }
+      const explanation = message.attachments?.find(
+        (attachment) => attachment.type === "explanation"
+      )?.payload;
+      if (!!explanation) {
+        setUserModel(explanation);
+      }
     },
     [giveFeedback, chatMessagesRef, config]
   );
@@ -135,47 +150,66 @@ export default function ChatBox() {
   }, [onRestart]);
 
   return (
-    <div className="chat-widget-content">
-      <MDBCard
-        id="chatBox"
-        className="chat-widget-card"
-        style={{ borderRadius: "15px" }}
-      >
-        <MDBCardHeader
-          className="d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0"
-          style={{
-            borderTopLeftRadius: "15px",
-            borderTopRightRadius: "15px",
-          }}
+    <MDBRow>
+      <MDBCol md="6" className="chat-widget-content">
+        <MDBCard
+          id="chatBox"
+          className="chat-widget-card"
+          style={{ border: "1px solid #ccc", borderRadius: "15px" }}
         >
-          <p className="mb-0 fw-bold">{config.name}</p>
-          <p className="mb-0 fw-bold">{user?.username}</p>
-        </MDBCardHeader>
+          <MDBCardHeader
+            className="d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0"
+            style={{
+              borderTopLeftRadius: "15px",
+              borderTopRightRadius: "15px",
+            }}
+          >
+            <h5 className="mb-0 fw-bold">{config.name}</h5>
+            <h5 className="mb-0 fw-bold">
+              {user?.username}
+              <MDBIcon
+                icon="cog"
+                className="ms-2"
+                onClick={toggleUserModel}
+                style={{ cursor: "pointer" }}
+              />
+            </h5>
+          </MDBCardHeader>
 
-        <MDBCardBody>
-          <div className="card-body-messages">
-            {chatMessages}
-            <div className="d-flex flex-wrap justify-content-between">
-              {chatButtons}
+          <MDBCardBody>
+            <div className="card-body-messages">
+              {chatMessages}
+              <div className="d-flex flex-wrap justify-content-between">
+                {chatButtons}
+              </div>
             </div>
-          </div>
-        </MDBCardBody>
-        <MDBCardFooter className="text-muted d-flex justify-content-start align-items-center p-2">
-          <form className="d-flex flex-grow-1" onSubmit={handleInput}>
-            <input
-              type="text"
-              className="form-control form-control-lg"
-              id="ChatInput"
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type message"
-              ref={inputRef}
-            ></input>
-            <button type="submit" className="btn btn-link text-muted">
-              <MDBIcon fas size="2x" icon="paper-plane" />
-            </button>
-          </form>
-        </MDBCardFooter>
-      </MDBCard>
-    </div>
+          </MDBCardBody>
+          <MDBCardFooter
+            className="text-muted d-flex justify-content-start align-items-center p-2"
+            style={{ borderTop: "1px solid #ccc" }}
+          >
+            <form className="d-flex flex-grow-1" onSubmit={handleInput}>
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                id="ChatInput"
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type message"
+                ref={inputRef}
+              ></input>
+              <button type="submit" className="btn btn-link text-muted">
+                <MDBIcon fas size="2x" icon="paper-plane" />
+              </button>
+            </form>
+          </MDBCardFooter>
+        </MDBCard>
+      </MDBCol>
+
+      {showUserModel && (
+        <MDBCol md="6">
+          <UserModelComponent user_model={userModel} />
+        </MDBCol>
+      )}
+    </MDBRow>
   );
 }
