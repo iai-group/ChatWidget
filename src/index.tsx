@@ -55,7 +55,7 @@ window.ChatWidget = (config, containerId) => {
 
   root.render(
     <ConfigProvider>
-      <SocketProvider>
+      <SocketProvider url={config.serverUrl} path={config.socketioPath}>
         <UserProvider>
           <ConfigLoader config={config} />
         </UserProvider>
