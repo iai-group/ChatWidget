@@ -7,7 +7,17 @@ import {
 } from "mdb-react-ui-kit";
 import "./RecommendationItem.css";
 import { Article } from "../../../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSocket } from "../../../contexts/SocketContext";
+
+declare global {
+  interface Window {
+    MathJax?: {
+      typesetPromise: () => Promise<void>;
+      // Add other MathJax methods you might need here
+    };
+  }
+}
 
 const RecommendationItem = ({
   article,
@@ -18,10 +28,14 @@ const RecommendationItem = ({
   isBookmarked: boolean;
   toggleBookmarkClick: () => void;
 }) => {
-  // const { giveRecommendationFeedback, bookmarkArticle } = useSocket();
+  const { logEvent } = useSocket();
   const [showSummary, setShowSummary] = useState(false);
 
   const handleSummaryClick = () => {
+    logEvent({
+      event: showSummary ? "Collapse summary" : "Expand summary",
+      metadata: { article_id: article.item_id },
+    });
     setShowSummary(!showSummary);
   };
   // const handlePositiveFeedback = () => {
@@ -30,6 +44,24 @@ const RecommendationItem = ({
   // const handleNegativeFeedback = () => {
   //   giveRecommendationFeedback(article_id, -1);
   // };
+
+  const convertLatexMathInline = (text: string) => {
+    // Replace all occurrences of $$ with \( or \) depending on position (even or odd)
+    return text.replace(/\$/g, (match, offset, string) => {
+      // Count the number of $$ occurrences before the current match
+      let precedingMatches = string.slice(0, offset).match(/\$/g);
+      let count = precedingMatches ? precedingMatches.length : 0;
+
+      // If count is even, replace with \(, otherwise replace with \)
+      return count % 2 === 0 ? "\\(" : "\\)";
+    });
+  };
+
+  useEffect(() => {
+    if (showSummary) {
+      window.MathJax?.typesetPromise();
+    }
+  });
 
   return (
     <MDBCard
@@ -42,7 +74,9 @@ const RecommendationItem = ({
     >
       {/* <MDBCard className="mb-3 recommendationCard bg-light text-dark border-primary"> */}
       <MDBCardBody className="d-flex flex-column justify-content-between">
-        <MDBCardText style={{ fontSize: "15px" }}>{article.title}</MDBCardText>
+        <MDBCardText className="tex" style={{ fontSize: "15px" }}>
+          {convertLatexMathInline(article.title)}
+        </MDBCardText>
         {article.authors && (
           <MDBCardText style={{ fontSize: "12px" }}>
             {article.authors.join(", ")}
@@ -83,11 +117,14 @@ const RecommendationItem = ({
             Less like this
           </MDBBtn> */}
         </div>
-        <MDBCollapse show={showSummary}>
+        <MDBCollapse open={showSummary}>
           <div className="mt-3">
-            <p
+            <div
+              className="tex"
               style={{ fontSize: "14px" }}
-              dangerouslySetInnerHTML={{ __html: article.abstract }}
+              dangerouslySetInnerHTML={{
+                __html: convertLatexMathInline(article.abstract),
+              }}
             />
           </div>
         </MDBCollapse>

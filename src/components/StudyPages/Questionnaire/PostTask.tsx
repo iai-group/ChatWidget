@@ -1,8 +1,9 @@
 import BaseComponent from "../Base/Base";
-import { AppRoutes } from "../../../routes";
+import { useAppRoutes } from "../../../routes";
 
 export default function PostTask({ user_id }: { user_id: string }) {
   const form_url = `https://docs.google.com/forms/d/e/1FAIpQLScfkasBZ7S7Dw1HfZKMmRRUExDjNFSpaaRaG6vVaB1nGioizg/viewform?usp=pp_url&entry.1506333392=${user_id}&embedded=true`;
+  const routes = useAppRoutes();
 
   const scrollToTop = () => {
     window.scrollTo(0, 0);
@@ -12,7 +13,7 @@ export default function PostTask({ user_id }: { user_id: string }) {
     <BaseComponent
       pageTitle="Post-Task Questionnaire"
       buttonText="I have Submitted the Questionnaire"
-      nextPath={AppRoutes.TASK}
+      nextPath={routes.TASK}
     >
       <iframe
         onLoad={scrollToTop}

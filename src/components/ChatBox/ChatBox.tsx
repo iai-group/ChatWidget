@@ -24,7 +24,6 @@ import {
 } from "../ChatMessageBlock/ChatMessage";
 import { ChatMessage } from "../../types";
 import { ConfigContext } from "../../contexts/ConfigContext";
-import { log } from "console";
 
 export enum StyleOption {
   DEFAULT = "default",
@@ -50,7 +49,6 @@ export function ChatBox({
     // settings,
     startConversation,
     sendMessage,
-    quickReply,
     onMessage,
     onRestart,
     giveFeedback,
@@ -128,16 +126,16 @@ export function ChatBox({
   };
 
   const handleQuickReply = useCallback(
-    (message: string) => {
+    (message: string, index: number) => {
       updateMessages(
         <UserChatMessage
           key={chatMessagesRef.current.length}
           message={message}
         />
       );
-      quickReply({ message: message });
+      sendMessage({ message: message, metadata: { option: index } });
     },
-    [chatMessagesRef, quickReply]
+    [chatMessagesRef, sendMessage]
   );
 
   const handleMessage = useCallback(
@@ -206,10 +204,13 @@ export function ChatBox({
 
   const handleButtons = useCallback(
     (message: ChatMessage) => {
+      console.log(message);
       const buttons = message.attachments?.find(
         (attachment) => attachment.type === "buttons"
       )?.payload.buttons;
+      console.log(buttons);
       if (!!buttons && buttons.length > 0) {
+        console.log("Setting buttons");
         setChatButtons(
           buttons.map((button, index) => {
             return (

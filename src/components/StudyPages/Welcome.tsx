@@ -1,12 +1,13 @@
 import BaseComponent from "./Base/Base";
-import { AppRoutes } from "../../routes";
+import { useAppRoutes } from "../../routes";
 
 export default function Welcome() {
+  const routes = useAppRoutes();
   return (
     <BaseComponent
       pageTitle="Welcome to the Study"
       buttonText="Start"
-      nextPath={AppRoutes.PRE_TASK}
+      nextPath={routes.PRE_TASK}
     >
       <div style={{ margin: "10px 50px" }}>
         <div className="welcome" style={{ marginBottom: "20px" }}>

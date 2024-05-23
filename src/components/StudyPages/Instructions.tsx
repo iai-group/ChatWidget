@@ -1,12 +1,13 @@
 import BaseComponent from "./Base/Base";
-import { AppRoutes } from "../../routes";
+import { useAppRoutes } from "../../routes";
 
 export default function Instructions() {
+  const routes = useAppRoutes();
   return (
     <BaseComponent
       pageTitle="Instructions"
       buttonText="Next"
-      nextPath={AppRoutes.TASK}
+      nextPath={routes.TASK}
     >
       <div style={{ margin: "10px 50px" }}>
         <div className="task-description" style={{ marginBottom: "20px" }}>

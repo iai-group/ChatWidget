@@ -20,6 +20,7 @@ declare global {
 
 window.ChatWidget = (config, containerId) => {
   const container = document.getElementById(containerId);
+  console.log("container", container);
 
   if (Object.keys(config).length === 0 && container) {
     // Read data properties from the container div and use them as the config
@@ -34,6 +35,7 @@ window.ChatWidget = (config, containerId) => {
     if (dataset.serverUrl) config.serverUrl = dataset.serverUrl;
     if (dataset.socketioPath) config.socketioPath = dataset.socketioPath;
     if (dataset.mode) config.mode = dataset.mode;
+    if (dataset.path) config.path = dataset.path;
   }
 
   if (!root) {

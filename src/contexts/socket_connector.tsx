@@ -136,10 +136,6 @@ export default function useSocketConnection() {
     socket?.emit("message", message);
   };
 
-  const quickReply = (message: UserMessage) => {
-    socket?.emit("message", message);
-  };
-
   const giveFeedback = (message: string, feedback: number) => {
     socket?.emit("feedback", { message: message, feedback: feedback });
   };
@@ -254,7 +250,6 @@ export default function useSocketConnection() {
     // onTaskDetails,
     setStyle,
     logEvent,
-    quickReply,
     onRestart,
     onMessage,
     onRecommendation,

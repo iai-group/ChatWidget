@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { MDBBtn, MDBBtnGroup } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 import "./Base.css";
-import { AppRoutes } from "../../../routes";
+import { useAppRoutes } from "../../../routes";
 import { useSocket } from "../../../contexts/SocketContext";
 import { EventHandler } from "../../../types";
 
@@ -21,12 +21,14 @@ const BaseComponent: React.FC<BaseComponentProps> = ({
   pageTitle,
   buttonText = undefined,
   buttonHandler = undefined,
-  nextPath = AppRoutes.HOME,
+  nextPath = undefined,
   openModal = undefined,
 }) => {
   // const [currentPage, setCurrentPage] = useState(0);
   const navigate = useNavigate();
   const { logEvent } = useSocket();
+  const routes = useAppRoutes();
+  nextPath = nextPath || routes.HOME;
 
   const handleContinueButtonClick = () => {
     logEvent({

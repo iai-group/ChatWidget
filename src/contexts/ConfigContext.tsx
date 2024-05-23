@@ -15,6 +15,7 @@ export type Config = {
   useWidget: boolean | false;
   socketioPath?: string | undefined;
   mode?: string;
+  path: string;
 };
 
 type ConfigProviderProps = {
@@ -30,6 +31,7 @@ const defaultConfig: Config = {
   useWidget: false,
   socketioPath: undefined,
   mode: Mode.DEFAULT,
+  path: "/",
 };
 
 export const ConfigContext = React.createContext<{

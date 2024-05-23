@@ -7,7 +7,7 @@ import Instructions from "./components/StudyPages/Instructions";
 import PostTask from "./components/StudyPages/Questionnaire/PostTask";
 import PostAllTasks from "./components/StudyPages/Questionnaire/PostAllTasks";
 import Last from "./components/StudyPages/Last";
-import { AppRoutes } from "./routes";
+import { useAppRoutes } from "./routes";
 import Task from "./components/StudyPages/Task/Task";
 import { useSocket } from "./contexts/SocketContext";
 
@@ -19,6 +19,7 @@ export default function App({
   const { setConfig } = useContext(ConfigContext);
   const { logEvent } = useSocket();
   const [userId, setUserId] = useState<string>("");
+  const routes = useAppRoutes();
 
   const generateToken = () => {
     const token =
@@ -56,22 +57,25 @@ export default function App({
   return (
     <Router>
       <Routes>
-        <Route path={AppRoutes.HOME} element={<Welcome />} />
-        <Route path={AppRoutes.INSTRUCTIONS} element={<Instructions />} />
+        <Route path={routes.HOME} element={<Welcome />} />
+        <Route path={routes.INSTRUCTIONS} element={<Instructions />} />
+        <Route path={routes.PRE_TASK} element={<PreTask user_id={userId} />} />
+        {/* <Route path={routes.TASK} element={<Task />} /> */}
+        <Route path={routes.INVOLVED} element={<Task style="involved" />} />
         <Route
-          path={AppRoutes.PRE_TASK}
-          element={<PreTask user_id={userId} />}
+          path={routes.CONSIDERATE}
+          element={<Task style="considerate" />}
         />
-        <Route path={AppRoutes.TASK} element={<Task />} />
+        <Route path={routes.DEFAULT} element={<Task style="default" />} />
         <Route
-          path={AppRoutes.POST_TASK}
+          path={routes.POST_TASK}
           element={<PostTask user_id={userId} />}
         />
         <Route
-          path={AppRoutes.POST_ALL_TASKS}
+          path={routes.POST_ALL_TASKS}
           element={<PostAllTasks user_id={userId} />}
         />
-        <Route path={AppRoutes.LAST} element={<Last />} />
+        <Route path={routes.LAST} element={<Last />} />
       </Routes>
     </Router>
   );
