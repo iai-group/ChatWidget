@@ -1,12 +1,21 @@
 import React, { useState, ReactNode } from "react";
 
+export enum Mode {
+  DEFAULT = "default",
+  STYLE_TEST = "style_test",
+  STUDY = "study",
+}
+
 export type Config = {
-  name: string | undefined;
-  serverUrl: string | undefined;
-  useFeedback: boolean | undefined;
-  useLogin: boolean | undefined;
-  useWidget?: boolean | undefined;
+  name: string;
+  serverUrl: string;
+  useFeedback: boolean | false;
+  useLogin: boolean | false;
+  useRecommendationFrame: boolean | false;
+  useWidget: boolean | false;
   socketioPath?: string | undefined;
+  mode?: string;
+  path: string;
 };
 
 type ConfigProviderProps = {
@@ -18,8 +27,11 @@ const defaultConfig: Config = {
   serverUrl: "http://127.0.0.1:5000/",
   useFeedback: false,
   useLogin: false,
+  useRecommendationFrame: false,
   useWidget: false,
   socketioPath: undefined,
+  mode: Mode.DEFAULT,
+  path: "/",
 };
 
 export const ConfigContext = React.createContext<{

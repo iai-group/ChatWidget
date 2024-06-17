@@ -6,7 +6,7 @@ export default function Feedback({
   on_feedback,
 }: {
   message: string;
-  on_feedback: (message: string, event: string) => void;
+  on_feedback: (message: string, event: number) => void;
 }): JSX.Element {
   const [liked, setLiked] = useState<boolean | null>(null);
   const thumbsUp = useRef<HTMLAnchorElement>(null);
@@ -16,7 +16,7 @@ export default function Feedback({
     if (!!thumbsUp.current) {
       thumbsUp.current.addEventListener("click", () => {
         setLiked(true);
-        on_feedback(message, "thumbs_up");
+        on_feedback(message, 1);
       });
     }
   }, [thumbsUp, on_feedback, message]);
@@ -25,7 +25,7 @@ export default function Feedback({
     if (!!thumbsDown.current) {
       thumbsDown.current.addEventListener("click", () => {
         setLiked(false);
-        on_feedback(message, "thumbs_down");
+        on_feedback(message, 0);
       });
     }
   }, [thumbsDown, on_feedback, message]);

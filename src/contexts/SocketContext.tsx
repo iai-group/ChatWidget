@@ -3,8 +3,6 @@ import useSocketConnection from "./socket_connector";
 
 interface SocketProviderProps {
   children: ReactNode;
-  url?: string;
-  path?: string;
 }
 
 const SocketContext = createContext<ReturnType<
@@ -19,12 +17,8 @@ export const useSocket = () => {
   return context;
 };
 
-export const SocketProvider: React.FC<SocketProviderProps> = ({
-  children,
-  url,
-  path,
-}) => {
-  const socketMethods = useSocketConnection(url, path);
+export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  const socketMethods = useSocketConnection();
 
   return (
     <SocketContext.Provider value={socketMethods}>
