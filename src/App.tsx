@@ -10,7 +10,7 @@ export default function App() {
   const { config } = useContext(ConfigContext);
   const { user } = useContext(UserContext);
 
-  const content = !user ? <LoginForm /> : <ChatBox />;
+  const content = !user && config.useLogin ? <LoginForm /> : <ChatBox />;
   return config.useWidget ? (
     <ChatWidget>{content}</ChatWidget>
   ) : (
