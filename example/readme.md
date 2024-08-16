@@ -5,13 +5,13 @@
 First, install dependencies by running:
 
 ```bash
-pip install -r requirements.txt
+pip install -r example/requirements.txt
 ```
 
 Then, run the server by running:
 
 ```bash
-python parrot.py
+python example/parrot.py
 ```
 
 Leave the terminal open to keep the server running. Open a new terminal window to set up and start the client.
@@ -21,7 +21,7 @@ Install Node if you don't have it from [here](https://nodejs.org/en/download/).
 Then run:
 
 ```bash
-npm init
+npm install
 ```
 
 ```bash
