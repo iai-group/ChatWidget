@@ -1,5 +1,7 @@
 # Example
 
+This example is meant to illustrate how a simple agent that parrots back what the user is saying can be connected to ChatWidget. The parrot agent used in this example is implemented in the [DialogueKit](https://github.com/iai-group/dialoguekit) toolkit.
+
 ## Setup
 
 First, install dependencies by running:
@@ -8,7 +10,7 @@ First, install dependencies by running:
 pip install -r example/requirements.txt
 ```
 
-Then, run the server by running:
+Then, start the server by running:
 
 ```bash
 python example/parrot.py
