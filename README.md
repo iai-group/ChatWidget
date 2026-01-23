@@ -8,7 +8,7 @@ This is a simple chat widget that can be embedded into any website. It is built 
 
 ## Usage
 
-To use this widget, you need to have a server running. You can find instructions on how to set up the server [here](../README.md).
+To use this widget, you need to have a server running.
 Add the following code to your website:
 
 ```html
